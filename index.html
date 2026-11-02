@@ -1,0 +1,473 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>[hidden]{display:none!important}img{max-width:100%}</style></head><body>
+<title>Cuaderno de Civil</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Concepto: señalética de obra pública. Carril lateral como un cartel de carretera, contenido sobre papel técnico. */
+:root{
+  --bg:#eef2ef;--paper:#fbfcfa;--ink:#14231e;--mute:#566a62;--line:#cdd8d2;--grid:#dfe7e2;
+  --road:#0d5c46;--road-ink:#f3faf6;--road-soft:#d8ebe2;--amber:#a86500;--amber-soft:#faeed6;
+  --ok:#17794f;--ok-soft:#dcf1e6;--bad:#b3382c;--bad-soft:#f9e2de;--focus:#c97a00;
+  --display:"Barlow Condensed","Arial Narrow",sans-serif;--body:"Barlow","Segoe UI",system-ui,sans-serif;--mono:"IBM Plex Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0e1714;--paper:#16221e;--ink:#e6efea;--mute:#9db0a8;--line:#2d3f38;--grid:#1b2a25;
+  --road:#0b4a39;--road-ink:#ecf7f2;--road-soft:#1c3a30;--amber:#efb04d;--amber-soft:#3b2d14;
+  --ok:#5bcf9b;--ok-soft:#163a2b;--bad:#f0897c;--bad-soft:#44201b;--focus:#efb04d;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1714;--paper:#16221e;--ink:#e6efea;--mute:#9db0a8;--line:#2d3f38;--grid:#1b2a25;
+  --road:#0b4a39;--road-ink:#ecf7f2;--road-soft:#1c3a30;--amber:#efb04d;--amber-soft:#3b2d14;
+  --ok:#5bcf9b;--ok-soft:#163a2b;--bad:#f0897c;--bad-soft:#44201b;--focus:#efb04d;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font:400 17px/1.5 var(--body);margin:0}
+.app{display:grid;grid-template-columns:216px minmax(0,1fr);min-height:100%}
+.rail{background:var(--road);color:var(--road-ink);padding:22px 14px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:18px}
+.brand{font:700 26px/1 var(--display);letter-spacing:.01em;padding:0 8px}
+.brand small{display:block;font:500 13px/1.3 var(--body);opacity:.8;margin-top:6px}
+.nav{display:flex;flex-direction:column;gap:3px}
+.nav button{all:unset;cursor:pointer;padding:9px 10px;border-radius:5px;font:600 20px/1.1 var(--display);letter-spacing:.015em;display:flex;gap:9px;align-items:baseline}
+.nav button:hover{background:rgba(255,255,255,.1)}
+.nav button[aria-current="page"]{background:var(--road-ink);color:#0b3b2e}
+.nav button:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.railnote{margin-top:auto;font-size:13px;line-height:1.35;opacity:.82;padding:0 8px}
+main{padding-block:30px 70px;padding-left:max(28px,env(safe-area-inset-left,0px));padding-right:max(28px,env(safe-area-inset-right,0px));min-width:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:28px 28px}
+.wrap{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1{font:700 40px/1.05 var(--display);margin:0;text-wrap:balance}
+h2{font:600 27px/1.15 var(--display);margin:0;text-wrap:balance}
+h3{font:600 21px/1.2 var(--display);margin:0}
+p{margin:0}.lead{color:var(--mute);max-width:66ch}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:20px;display:flex;flex-direction:column;gap:13px;min-width:0}
+.kicker{font:600 13px/1.2 var(--body);letter-spacing:.07em;text-transform:uppercase;color:var(--mute)}
+.row{display:flex;flex-wrap:wrap;gap:9px;align-items:center}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.btn{font:600 16px/1 var(--body);border:1px solid var(--line);background:var(--paper);color:var(--ink);padding:10px 14px;border-radius:5px;cursor:pointer}
+.btn:hover{border-color:var(--road);}
+.btn.pri{background:var(--road);border-color:var(--road);color:var(--road-ink)}
+.btn.pri:hover{filter:brightness(1.15)}
+.btn[disabled]{opacity:.5;cursor:default}
+.chip{font:500 15px/1 var(--body);border:1px solid var(--line);background:transparent;color:var(--ink);padding:8px 11px;border-radius:99px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--road);border-color:var(--road);color:var(--road-ink)}
+.tema{display:grid;grid-template-columns:30px minmax(0,1fr) 54px;gap:10px;align-items:center;background:none;border:0;border-top:1px solid var(--line);padding:10px 0;color:inherit;font:inherit;text-align:left;width:100%;cursor:pointer}
+.tema:first-of-type{border-top:0}
+.tema b{font:700 25px/1 var(--display);color:var(--road)}
+:root[data-theme="dark"] .tema b{color:var(--ok)}
+.bar{height:7px;background:var(--grid);border-radius:4px;overflow:hidden;margin-top:6px}.bar i{display:block;height:100%;background:var(--ok)}
+.pct{font:500 15px/1 var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.stat{font:700 42px/1 var(--display)}.small{font-size:15px;color:var(--mute)}
+.q{overflow-x:auto;padding-block:3px;min-width:0}
+.field{font:500 16px var(--mono);background:var(--bg);border:1px solid var(--line);color:var(--ink);border-radius:4px;padding:8px;width:92px;text-align:center}
+.mgrid{display:inline-grid;gap:6px;padding:9px 12px;border-left:2px solid var(--ink);border-right:2px solid var(--ink);border-radius:9px}
+.mgrid .field{width:66px}
+.opt{display:block;width:100%;text-align:left;font:inherit;background:var(--bg);border:1px solid var(--line);color:inherit;padding:10px 12px;border-radius:5px;cursor:pointer}
+.opt[aria-pressed="true"]{border:2px solid var(--road);padding:9px 11px}
+.fb{padding:11px 13px;border-radius:5px;font-weight:500}.fb.ok{background:var(--ok-soft);color:var(--ok)}.fb.bad{background:var(--bad-soft);color:var(--bad)}.fb.note{background:var(--amber-soft);color:var(--ink);font-weight:400}
+.steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:9px}.steps li{overflow-x:auto;padding-block:2px}
+details{border-top:1px solid var(--line);padding-top:10px}details:first-of-type{border-top:0;padding-top:0}
+summary{cursor:pointer;font:600 21px/1.25 var(--display)}
+.body{display:flex;flex-direction:column;gap:9px;padding-block:9px 6px;max-width:72ch}
+.body ul{margin:0;padding-left:20px}.body li{margin-block:3px}
+.box{background:var(--road-soft);padding:9px 12px;border-radius:5px;overflow-x:auto}
+.trap{background:var(--amber-soft);padding:9px 12px;border-radius:5px}
+.card{min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:12px;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:24px;font-size:19px;overflow-x:auto}
+textarea{width:100%;min-height:124px;font:500 16px/1.6 var(--mono);background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:5px;padding:10px;resize:vertical}
+input[type=date],select{font:inherit;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:7px}
+.tbl{width:100%;border-collapse:collapse;font-size:16px}.tbl th,.tbl td{border-top:1px solid var(--line);padding:8px 7px;text-align:left;vertical-align:top}.tbl th{font:600 13px var(--body);letter-spacing:.05em;text-transform:uppercase;color:var(--mute)}
+.scroll{overflow-x:auto}.badge{font:600 12px/1 var(--body);padding:4px 7px;border-radius:99px;background:var(--amber-soft);color:var(--amber);white-space:nowrap}
+@media (max-width:820px){
+  .app{display:block}
+  .rail{position:fixed;inset:auto 0 0 0;height:auto;z-index:5;padding:5px max(8px,env(safe-area-inset-right,0px)) calc(5px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px));flex-direction:row}
+  .brand,.railnote{display:none}
+  .nav{flex-direction:row;justify-content:space-between;width:100%;gap:0;overflow-x:auto}
+  .nav button{padding:8px 7px;font-size:16px;white-space:nowrap}
+  main{padding-block:20px 92px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .grid2{grid-template-columns:minmax(0,1fr)}h1{font-size:33px}
+}
+@media (prefers-reduced-motion:no-preference){.fade{animation:f .18s ease-out}@keyframes f{from{transform:translateY(3px)}to{transform:none}}}
+</style>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'},startup:{typeset:false}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+
+<div class="app">
+  <aside class="rail">
+    <div class="brand">Cuaderno de Civil<small>Álgebra · Ingeniería Civil</small></div>
+    <nav class="nav" id="nav" aria-label="Secciones"></nav>
+    <div class="railnote" id="savenote">Tu progreso se guarda en este dispositivo.</div>
+  </aside>
+  <main><div class="wrap fade" id="view"></div></main>
+</div>
+
+<script>
+const R=String.raw;
+/* ---------- fracciones y matrices exactas ---------- */
+const gcd=(a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b)[a,b]=[b,a%b];return a||1};
+const fr=(n,d=1)=>{if(n&&n.d)return n;if(d<0){n=-n;d=-d}const g=gcd(n,d);return{n:n/g,d:d/g}};
+const fa=(a,b)=>fr(a.n*b.d+b.n*a.d,a.d*b.d),fs=(a,b)=>fr(a.n*b.d-b.n*a.d,a.d*b.d),fm=(a,b)=>fr(a.n*b.n,a.d*b.d),fd=(a,b)=>fr(a.n*b.d,a.d*b.n);
+const fz=a=>a.n===0,feq=(a,b)=>a.n*b.d===b.n*a.d,fneg=a=>fr(-a.n,a.d);
+const ft=a=>a.d===1?`${a.n}`:(a.n<0?'-':'')+R`\frac{${Math.abs(a.n)}}{${a.d}}`;
+const fp=a=>a.d===1?`${a.n}`:`${a.n}/${a.d}`;
+function parseF(s){s=String(s).trim().replace(',','.').replace('−','-');if(!s)return null;let m;
+  if(m=s.match(/^([+-]?\d+)\s*\/\s*(\d+)$/)){return +m[2]?fr(+m[1],+m[2]):null}
+  if(m=s.match(/^[+-]?\d+$/))return fr(+s);
+  if(m=s.match(/^([+-]?)(\d*)\.(\d+)$/)){const d=10**m[3].length;return fr((m[1]==='-'?-1:1)*(+(m[2]||0)*d+ +m[3]),d)}return null}
+const toF=A=>A.map(r=>r.map(x=>fr(x)));
+const mmul=(A,B)=>A.map(r=>B[0].map((_,j)=>r.reduce((s,x,k)=>s+x*B[k][j],0)));
+const fmul=(A,B)=>A.map(r=>B[0].map((_,j)=>r.reduce((s,x,k)=>fa(s,fm(x,B[k][j])),fr(0))));
+const tr=A=>A[0].map((_,j)=>A.map(r=>r[j]));
+const idn=n=>Array.from({length:n},(_,i)=>Array.from({length:n},(_,j)=>+(i===j)));
+const texM=(A,env='pmatrix')=>R`\begin{${env}}`+A.map(r=>r.map(x=>x&&x.d?ft(x):x).join('&')).join(R`\\`)+R`\end{${env}}`;
+const texAug=(A,k)=>R`\left(\begin{array}{${'r'.repeat(k)}|${'r'.repeat(A[0].length-k)}}`+A.map(r=>r.map(x=>x&&x.d?ft(x):x).join('&')).join(R`\\`)+R`\end{array}\right)`;
+const texV=v=>'('+v.map(x=>x&&x.d?ft(x):x).join(',\\,')+')';
+const opText=(t,i,c,j)=>t==='swap'?R`F_{${i+1}}\leftrightarrow F_{${j+1}}`:R`F_{${i+1}}\to F_{${i+1}}${c.n<0?'+':'-'}${(Math.abs(c.n)===c.d)?'':ft(fr(Math.abs(c.n),c.d))}F_{${j+1}}`;
+/* escalonamiento con registro de pasos */
+function echelon(A0,cols){const A=A0.map(r=>r.map(x=>fr(x)));const n=A.length,m=cols||A[0].length;let r=0,sign=1;const steps=[],piv=[];
+  for(let c=0;c<m&&r<n;c++){let p=-1;for(let i=r;i<n;i++)if(!fz(A[i][c])){p=i;break}if(p<0)continue;
+    if(p!==r){[A[p],A[r]]=[A[r],A[p]];sign=-sign;steps.push({op:opText('swap',r,0,p),M:A.map(x=>x.slice())})}
+    const ops=[];for(let i=r+1;i<n;i++){if(fz(A[i][c]))continue;const f=fd(A[i][c],A[r][c]);A[i]=A[i].map((x,j)=>fs(x,fm(f,A[r][j])));ops.push(opText('add',i,f,r))}
+    if(ops.length)steps.push({op:ops.join(',\\ '),M:A.map(x=>x.slice())});piv.push(c);r++}
+  return{M:A,rank:r,sign,steps,piv}}
+const rank=A=>echelon(A).rank;
+function det(A){const e=echelon(A);let d=fr(e.sign);for(let i=0;i<A.length;i++)d=fm(d,e.M[i][i]);return d}
+function rref(A0,cols){const e=echelon(A0,cols);const A=e.M.map(r=>r.slice());for(let k=e.rank-1;k>=0;k--){const c=e.piv[k];const p=A[k][c];A[k]=A[k].map(x=>fd(x,p));for(let i=0;i<k;i++){const f=A[i][c];if(!fz(f))A[i]=A[i].map((x,j)=>fs(x,fm(f,A[k][j])))}}return{M:A,rank:e.rank,piv:e.piv}}
+function inv(A){const n=A.length;const r=rref(A.map((row,i)=>row.concat(idn(n)[i])),n);if(r.rank<n)return null;return r.M.map(x=>x.slice(n))}
+function nullspace(A){const m=A[0].length,r=rref(A);const free=[];for(let j=0;j<m;j++)if(!r.piv.includes(j))free.push(j);return free.map(f=>{const v=Array(m).fill(fr(0));v[f]=fr(1);r.piv.forEach((c,i)=>v[c]=fneg(r.M[i][f]));return v})}
+function solve(A,b){const k=A[0].length;const r=rref(A.map((x,i)=>x.concat([b[i]])),k);return r.M.slice(0,k).map(x=>x[k])}
+function charpoly(A){const n=A.length;let M=toF(A);const c=[fr(1)];let P=M; /* Faddeev-LeVerrier */
+  for(let k=1;k<=n;k++){let t=fr(0);for(let i=0;i<n;i++)t=fa(t,P[i][i]);const ck=fneg(fd(t,fr(k)));c.push(ck);const Q=P.map((r,i)=>r.map((x,j)=>i===j?fa(x,ck):x));P=fmul(M,Q)}return c}
+function polyTex(c,v='\\lambda'){const n=c.length-1;let s='';c.forEach((a,i)=>{if(fz(a))return;const e=n-i;const abs=fr(Math.abs(a.n),a.d);const coef=(abs.n===abs.d&&e>0)?'':ft(abs);s+=(a.n<0?'-':(s?'+':''))+coef+(e>1?`${v}^{${e}}`:e===1?v:'')});return s||'0'}
+function ratRoots(c0){let c=c0.slice();const roots=[];const lcm=c.reduce((l,a)=>l*a.d/gcd(l,a.d),1);let I=c.map(a=>a.n*lcm/a.d);
+  const ev=(I,x)=>I.reduce((s,a)=>fa(fm(s,x),fr(a)),fr(0));
+  const divs=n=>{n=Math.abs(n);const o=[];for(let i=1;i<=n;i++)if(n%i===0)o.push(i);return o};
+  let guard=0;while(I.length>1&&guard++<8){if(I[I.length-1]===0){roots.push(fr(0));I=I.slice(0,-1);continue}let found=null;
+    outer:for(const p of divs(I[I.length-1]))for(const q of divs(I[0]))for(const s of[1,-1]){const x=fr(s*p,q);if(fz(ev(I,x))){found=x;break outer}}
+    if(!found)break;roots.push(found);const out=[];let acc=fr(0);for(const a of I){acc=fa(fm(acc,found),fr(a));out.push(acc)}const dd=out.slice(0,-1);const l=dd.reduce((l,a)=>l*a.d/gcd(l,a.d),1);I=dd.map(a=>a.n*l/a.d)}
+  return{roots,rest:I}}
+/* ---------- azar ---------- */
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const nz=(a,b)=>{let x=0;while(!x)x=ri(a,b);return x};
+const pick=a=>a[ri(0,a.length-1)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=ri(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
+const rmat=(n,m,a=-3,b=4)=>Array.from({length:n},()=>Array.from({length:m},()=>ri(a,b)));
+function unimod(n,k=2){let L=idn(n),U=idn(n);for(let i=0;i<n;i++)for(let j=0;j<n;j++){if(i>j)L[i][j]=ri(-k,k);if(i<j)U[i][j]=ri(-k,k)}return mmul(L,U)}
+function regular(n){let A;do{A=rmat(n,n)}while(fz(det(A)));return A}
+function ofRank(n,m,r){let A;do{const B=rmat(r,m,-3,3);A=[];for(let i=0;i<r;i++)A.push(B[i].slice());while(A.length<n){const c=B.map(()=>ri(-2,2));A.push(B[0].map((_,j)=>c.reduce((s,x,k)=>s+x*B[k][j],0)))}A=shuffle(A)}while(rank(A)!==r);return A}
+const gaussSteps=(A,k)=>{const e=echelon(A,k);const t=m=>k?texAug(m,k):texM(m);return{e,list:[R`Partimos de \(${t(A)}\).`].concat(e.steps.map(s=>R`\(${s.op}\): \(\;${t(s.M)}\)`))}};
+function eqLines(A,b,names='xyzt'){return R`\begin{cases}`+A.map((r,i)=>{let s='';r.forEach((a,j)=>{if(!a)return;const abs=Math.abs(a);s+=(a<0?'-':(s?'+':''))+(abs===1?'':abs)+names[j]});return (s||'0')+'='+b[i]}).join(R`\\`)+R`\end{cases}`}
+const lin=(c,names='xyz')=>{let s='';c.forEach((a,j)=>{if(!a)return;const abs=Math.abs(a);s+=(a<0?'-':(s?'+':''))+(abs===1?'':abs)+names[j]});return s||'0'};
+/* ---------- generadores por habilidad ---------- */
+const NUM=v=>({type:'num',value:fr(v)}),MAT=M=>({type:'mat',value:toF(M)}),VEC=v=>({type:'vec',value:v.map(x=>fr(x))}),CH=(o,c)=>({type:'choice',options:o,correct:c});
+const SK=[
+/* TEMA 1 */
+{id:'t1prod',t:1,n:'Producto de matrices',ref:'Hoja T1 · ej. 4',g(){const A=rmat(2,3,-2,3),B=rmat(3,2,-2,3);const C=mmul(A,B);return{q:R`Calcula \(A\cdot B\) con \(A=${texM(A)}\) y \(B=${texM(B)}\).`,a:MAT(C),hint:'Cada elemento es fila de A por columna de B. El resultado es 2×2.',steps:[R`Dimensiones: \(2\times3\) por \(3\times2\) da \(2\times2\).`,R`\(c_{11}=${A[0].map((x,k)=>`(${x})(${B[k][0]})`).join('+')}=${C[0][0]}\). Igual con el resto.`,R`\(A\cdot B=${texM(C)}\)`]}}},
+{id:'t1det3',t:1,n:'Determinante 3×3 (Sarrus)',ref:'Teoría 1.3.1',g(){const A=rmat(3,3,-3,4);const [a,b,c]=A[0],[d,e,f]=A[1],[g,h,i]=A[2];const v=det(A);const pos=[a*e*i,d*h*c,b*f*g],neg=[g*e*c,a*f*h,d*b*i];return{q:R`Calcula \(\det A\) con \(A=${texM(A)}\).`,a:NUM(v),hint:'Regla de Sarrus: tres productos con signo + y tres con signo −.',steps:[R`Términos positivos: \(${pos.join(R`,\ `)}\) suman \(${pos.reduce((x,y)=>x+y)}\).`,R`Términos negativos: \(${neg.join(R`,\ `)}\) suman \(${neg.reduce((x,y)=>x+y)}\).`,R`\(|A|=${ft(v)}\)`]}}},
+{id:'t1det4',t:1,n:'Determinante 4×4 escalonando',ref:'Hoja T1 · ej. 1 y 12',g(){let A,v;do{const U=idn(4);for(let i=0;i<4;i++){U[i][i]=pick([1,1,-1,2,-2]);for(let j=i+1;j<4;j++)U[i][j]=ri(-2,2)}const L=idn(4);for(let i=1;i<4;i++)for(let j=0;j<i;j++)L[i][j]=ri(-1,1);A=mmul(L,U);v=det(A)}while(v.d!==1);const s=gaussSteps(A);return{q:R`Calcula, triangulando, \(\det A\) con \(A=${texM(A)}\).`,a:NUM(v),hint:'Sumar a una fila un múltiplo de otra no cambia el determinante; intercambiar dos filas cambia el signo.',steps:s.list.concat([R`Producto de la diagonal${s.e.sign<0?' con signo cambiado por el intercambio':''}: \(|A|=${ft(v)}\).`])}}},
+{id:'t1detprop',t:1,n:'Propiedades del determinante',ref:'Hoja T1 · ej. 6',g(){const n=pick([2,3]),k=pick([2,3,-2]),da=pick([2,3,-1,5]),db=pick([2,-3,4]),p=pick([1,2]);const v=k**n*da**p*db;return{q:R`Sean \(A,B\in M_{${n}}\) con \(|A|=${da}\) y \(|B|=${db}\). Calcula \(\left|${k}\,A^{${p}}B^{t}\right|\).`,a:NUM(v),hint:'Un escalar sale elevado al orden de la matriz: |kA| = kⁿ|A|. Además |AB| = |A||B| y |Bᵗ| = |B|.',steps:[R`\(|kM|=k^{n}|M|\Rightarrow (${k})^{${n}}=${k**n}\).`,R`\(|A^{${p}}|=(${da})^{${p}}=${da**p}\) y \(|B^{t}|=|B|=${db}\).`,R`Resultado: \(${k**n}\cdot${da**p}\cdot${db}=${v}\).`]}}},
+{id:'t1rank',t:1,n:'Rango de una matriz',ref:'Hoja T1 · ej. 2',g(){const n=pick([3,4]),m=pick([4,5]),r=ri(2,3);const A=ofRank(n,m,r);const s=gaussSteps(A);return{q:R`Calcula \(\mathrm{rg}(A)\) con \(A=${texM(A)}\).`,a:NUM(r),hint:'Escalona: el rango es el número de filas no nulas que quedan.',steps:s.list.concat([R`Quedan ${r} filas no nulas, luego \(\mathrm{rg}(A)=${r}\).`])}}},
+{id:'t1inv',t:1,n:'Matriz inversa',ref:'Hoja T1 · ej. 10',g(){const n=pick([2,3,3]);const A=unimod(n,2);const I=inv(A);return{q:R`Calcula \(A^{-1}\) con \(A=${texM(A)}\).`,a:{type:'mat',value:I},hint:'Plantea (A | I) y haz operaciones por filas hasta llegar a (I | A⁻¹).',steps:[R`Forma \((A|I)=${texAug(A.map((r,i)=>r.concat(idn(n)[i])),n)}\).`,R`Tras operar por filas: \((I|A^{-1})=${texAug(idn(n).map((r,i)=>toF([r])[0].concat(I[i])),n)}\).`,R`Comprueba siempre que \(A\cdot A^{-1}=I\).`]}}},
+{id:'t1eq',t:1,n:'Ecuación matricial',ref:'Hoja T1 · ej. 4c',g(){const U=unimod(2,2);const A=U.map((r,i)=>r.map((x,j)=>x+(i===j?1:0)));const B=rmat(2,2,-2,3);const k=pick([1,2]);const X=fmul(inv(U),toF(B).map(r=>r.map(x=>fm(x,fr(-k)))));return{q:R`Halla \(X\) tal que \(AX+${k===1?'':k}B=X\), con \(A=${texM(A)}\) y \(B=${texM(B)}\).`,a:{type:'mat',value:X},hint:'Agrupa las X a un lado: (A − I)X = −kB. Multiplica por la inversa por la izquierda.',steps:[R`\((A-I)X=${-k}B\), con \(A-I=${texM(U)}\).`,R`\((A-I)^{-1}=${texM(inv(U))}\).`,R`\(X=(A-I)^{-1}\cdot(${-k}B)=${texM(X)}\). El orden importa: el producto no conmuta.`]}}},
+{id:'t1rankpar',t:1,n:'Rango con parámetro',ref:'Hoja T1 · ej. 14',g(){let A,c;do{A=rmat(3,3,-2,3);c=fr(A[0][0]*A[2][2]-A[0][2]*A[2][0])}while(fz(c));const B=A.map(r=>r.slice());B[1][1]=0;const d0=det(B);const a0=fd(fneg(d0),c);const tx=A.map((r,i)=>r.map((x,j)=>i===1&&j===1?'a':x));return{q:R`¿Para qué valor de \(a\) se cumple \(\mathrm{rg}(A)<3\)? \(A=${texM(tx)}\)`,a:NUM(a0),hint:'Rango menor que 3 significa |A| = 0. Desarrolla por la fila o columna de a.',steps:[R`El coeficiente de \(a\) en \(|A|\) es su adjunto: \(${ft(c)}\).`,R`Con \(a=0\) el determinante vale \(${ft(d0)}\), así que \(|A|=${ft(c)}\,a${d0.n<0?'':'+'}${ft(d0)}\).`,R`\(|A|=0\Rightarrow a=${ft(a0)}\).`]}}},
+{id:'t1pow',t:1,n:'Potencia de una matriz',ref:'Hoja T1 · ej. 13',g(){const k=nz(-3,3),n=ri(3,8);const A=[[1,k],[0,1]];return{q:R`Calcula \(A^{${n}}\) con \(A=${texM(A)}\).`,a:MAT([[1,k*n],[0,1]]),hint:'Calcula A² y A³, busca el patrón y aplícalo a n.',steps:[R`\(A^{2}=${texM(mmul(A,A))}\), \(A^{3}=${texM(mmul(mmul(A,A),A))}\).`,R`Patrón: \(A^{n}=\begin{pmatrix}1&nk\\0&1\end{pmatrix}\), que se prueba por inducción.`,R`Con \(n=${n}\): \(${texM([[1,k*n],[0,1]])}\).`]}}},
+/* TEMA 2 */
+{id:'t2class',t:2,n:'Clasificar con Rouché-Fröbenius',ref:'Hoja T2 · ej. 1 y 9',g(){const type=pick(['SCD','SCI','SI']);let A,b;if(type==='SCD'){A=regular(3);b=[ri(-5,5),ri(-5,5),ri(-5,5)]}else{A=ofRank(3,3,2);const x=[ri(-2,2),ri(-2,2),ri(-2,2)];b=A.map(r=>r.reduce((s,a,j)=>s+a*x[j],0));if(type==='SI'){let t=0;do{b=b.map((v,i)=>i===2?v+nz(-3,3):v);t++}while(rank(A.map((r,i)=>r.concat([b[i]])))===2&&t<9);if(rank(A.map((r,i)=>r.concat([b[i]])))===2)b[0]+=1,b[1]+=2}}const M=A.map((r,i)=>r.concat([b[i]]));const ra=rank(A),rm=rank(M);const real=ra!==rm?2:ra===3?0:1;const s=gaussSteps(M,3);return{q:R`Clasifica el sistema: \[${eqLines(A,b)}\]`,a:CH(['Compatible determinado','Compatible indeterminado','Incompatible'],real),hint:'Compara rg(A), rg(M) y el número de incógnitas.',steps:s.list.concat([R`\(\mathrm{rg}(A)=${ra}\), \(\mathrm{rg}(M)=${rm}\), 3 incógnitas.`,real===0?'Rangos iguales al número de incógnitas: compatible determinado.':real===1?'Rangos iguales y menores que 3: compatible indeterminado.':'Rangos distintos: incompatible.'])}}},
+{id:'t2solve',t:2,n:'Resolver por Gauss',ref:'Hoja T2 · ej. 2',g(){const A=unimod(3,2);const x=[ri(-4,5),ri(-4,5),ri(-4,5)];const b=A.map(r=>r.reduce((s,a,j)=>s+a*x[j],0));const s=gaussSteps(A.map((r,i)=>r.concat([b[i]])),3);return{q:R`Resuelve por Gauss: \[${eqLines(A,b)}\] Escribe \((x,y,z)\).`,a:VEC(x),hint:'Escalona la matriz ampliada y sustituye de abajo arriba.',steps:s.list.concat([R`Sustitución hacia atrás: \((x,y,z)=${texV(x)}\).`])}}},
+{id:'t2cramer',t:2,n:'Regla de Cramer',ref:'Teoría 2.3',g(){let A,d;do{A=rmat(3,3,-2,3);d=det(A)}while(fz(d));const b=[ri(-4,5),ri(-4,5),ri(-4,5)];const j=ri(0,2);const Aj=A.map((r,i)=>r.map((x,c)=>c===j?b[i]:x));const dj=det(Aj);const v=fd(dj,d);return{q:R`Con la regla de Cramer, calcula solo \(${'xyz'[j]}\): \[${eqLines(A,b)}\]`,a:NUM(v),hint:`Sustituye la columna ${j+1} por los términos independientes y divide entre |A|.`,steps:[R`\(|A|=${ft(d)}\neq0\).`,R`Sustituyendo la columna ${j+1}: \(\left|${texM(Aj,'matrix')}\right|=${ft(dj)}\).`,R`\(${'xyz'[j]}=\dfrac{${ft(dj)}}{${ft(d)}}=${ft(v)}\).`]}}},
+{id:'t2hom',t:2,n:'Homogéneo con solución no trivial',ref:'Hoja T2 · ej. 5',g(){let A,c;do{A=rmat(3,3,-3,4);c=fr(A[0][0]*A[1][1]-A[0][1]*A[1][0])}while(fz(c));const B=A.map(r=>r.slice());B[2][2]=0;const d=det(B);const k=fd(fneg(d),c);const T=A.map((r,i)=>r.map((x,j)=>i===2&&j===2?'k':x));const eq=T.map(r=>{let s='';r.forEach((a,j)=>{if(a===0)return;if(a==='k'){s+=(s?'+':'')+'k'+'xyz'[j];return}const abs=Math.abs(a);s+=(a<0?'-':(s?'+':''))+(abs===1?'':abs)+'xyz'[j]});return s+'=0'}).join(R`\\`);return{q:R`Halla \(k\) para que el sistema tenga soluciones distintas de la trivial: \[\begin{cases}${eq}\end{cases}\]`,a:NUM(k),hint:'Un homogéneo cuadrado tiene solución no trivial exactamente si |A| = 0.',steps:[R`Hay que imponer \(|A|=0\).`,R`Coeficiente de \(k\): \(${ft(c)}\); término sin \(k\): \(${ft(d)}\).`,R`\(${ft(c)}k${d.n<0?'':'+'}${ft(d)}=0\Rightarrow k=${ft(k)}\).`]}}},
+{id:'t2param',t:2,n:'Discutir según un parámetro',ref:'Hoja T2 · ej. 1 y 9a',g(){const c=pick([1,1,2]);const a=pick([1,-2,3,0]);const A=[[a,1,1],[1,a,1],[1,1,a]],b=[1,c,1];const M=A.map((r,i)=>r.concat([b[i]]));const ra=rank(A),rm=rank(M);const real=ra!==rm?2:ra===3?0:1;return{q:R`Para \(a=${a}\), clasifica el sistema \(\begin{cases}ax+y+z=1\\x+ay+z=${c}\\x+y+az=1\end{cases}\)`,a:CH(['Compatible determinado','Compatible indeterminado','Incompatible'],real),hint:'|A| = (a − 1)²(a + 2). Solo a = 1 y a = −2 requieren mirar la ampliada.',steps:[R`\(|A|=(a-1)^{2}(a+2)\).`,R`Para \(a=${a}\): \(\mathrm{rg}(A)=${ra}\) y \(\mathrm{rg}(M)=${rm}\).`,real===0?'Compatible determinado.':real===1?'Compatible indeterminado.':'Incompatible.']}}},
+{id:'t2dof',t:2,n:'Grados de indeterminación',ref:'Teoría 2.6',g(){const p=pick([3,4]),r=ri(1,p-1),n=ri(r,4);const A=ofRank(Math.max(n,r),p,r);const x=A[0].map(()=>ri(-2,2));const b=A.map(row=>row.reduce((s,a,j)=>s+a*x[j],0));return{q:R`El sistema es compatible. ¿Cuántas variables libres tiene? \[${eqLines(A,b)}\]`,a:NUM(p-r),hint:'Variables libres = número de incógnitas − rango.',steps:[R`\(\mathrm{rg}(A)=${r}\) y hay ${p} incógnitas.`,R`Variables libres: \(${p}-${r}=${p-r}\).`]}}},
+/* TEMA 3 */
+{id:'t3sub',t:3,n:'¿Es subespacio vectorial?',ref:'Hoja T3 · ej. 1',g(){const a=nz(-3,3),b=nz(-3,3),c=nz(1,4);const T=pick([[R`x${a<0?'-':'+'}${Math.abs(a)}y=0`,1,'Es una ecuación lineal homogénea.'],[R`x+${Math.abs(b)}y-z=${c}`,0,'No contiene al vector nulo porque el término independiente no es cero.'],[R`x^{2}+y-z=0`,0,R`No es lineal: la suma de dos vectores suele salir del conjunto.`],[R`x=${a}y,\ z=${b}x`,1,'Son ecuaciones lineales homogéneas.'],[R`xy=0`,0,R`\((1,0,0)\) y \((0,1,0)\) están dentro, pero su suma no.`],[R`|x|=y`,0,R`No es cerrado por producto por un escalar negativo.`]]);return{q:R`¿Es \(S=\{(x,y,z)\in\mathbb R^{3}\ /\ ${T[0]}\}\) un subespacio de \(\mathbb R^{3}\)?`,a:CH(['Sí','No'],T[1]?0:1),hint:'Mira primero si contiene al vector nulo y si las condiciones son lineales homogéneas.',steps:[T[2],T[1]?R`Se cumple \(\alpha\vec x+\beta\vec y\in S\) para todos los escalares y vectores de \(S\).`:'Basta un fallo para negar que sea subespacio.']}}},
+{id:'t3li',t:3,n:'Sistema libre o ligado',ref:'Presentación T3 · ap. 4',g(){const dep=Math.random()<.5;const A=dep?ofRank(3,pick([3,4]),2):ofRank(3,pick([3,4]),3);return{q:R`¿Cómo es el sistema \(\{${A.map(texV).join(',\\ ')}\}\)?`,a:CH(['Libre (linealmente independientes)','Ligado (linealmente dependientes)'],dep?1:0),hint:'Coloca los vectores como filas y calcula el rango: libre si coincide con el número de vectores.',steps:gaussSteps(A).list.concat([R`Rango \(${rank(A)}\) con 3 vectores: ${dep?'ligado':'libre'}.`])}}},
+{id:'t3dim',t:3,n:'Dimensión de una envoltura lineal',ref:'Hoja T3 · ej. 5',g(){const r=ri(1,3);const A=ofRank(pick([3,4]),4,r);return{q:R`Calcula \(\dim\langle ${A.map(texV).join(',\\ ')}\rangle\).`,a:NUM(r),hint:'La dimensión es el rango de la matriz formada por los vectores.',steps:gaussSteps(A).list.concat([R`\(\dim=${r}\).`])}}},
+{id:'t3coord',t:3,n:'Coordenadas en una base',ref:'Hoja T3 · ej. 10',g(){const P=unimod(3,2);const c=[ri(-3,3),ri(-3,3),ri(-3,3)];const v=P.map(r=>r.reduce((s,a,j)=>s+a*c[j],0));const B=tr(P);return{q:R`Halla las coordenadas de \(\vec v=${texV(v)}\) en la base \(B=\{${B.map(texV).join(',\\ ')}\}\).`,a:VEC(c),hint:'Plantea v = α·b₁ + β·b₂ + γ·b₃. Cada vector de la base es una columna.',steps:[R`Sistema: \(${texM(P)}\begin{pmatrix}\alpha\\\beta\\\gamma\end{pmatrix}=${texM(v.map(x=>[x]))}\).`,R`Solución: \(\vec v=${texV(c)}_B\).`]}}},
+{id:'t3comb',t:3,n:'Parámetro para ser combinación lineal',ref:'Hoja T3 · ej. 6',g(){const u=[nz(-3,4),ri(-2,3),ri(-2,3),ri(-2,3)];let w;do{w=[ri(-2,3),nz(-3,3),ri(-2,3),ri(-2,3)]}while(rank([u.slice(0,2),w.slice(0,2)])<2);const a=nz(-3,3),b=nz(-3,3);const x=u.map((v,i)=>a*v+b*w[i]);return{q:R`Halla \(k\) para que \(${texV([x[0],x[1],x[2],'k'])}\) sea combinación lineal de \(${texV(u)}\) y \(${texV(w)}\).`,a:NUM(x[3]),hint:'Saca α y β con las coordenadas conocidas y sustitúyelos en la última.',steps:[R`Resolviendo las dos primeras coordenadas: \(\alpha=${a},\ \beta=${b}\).`,R`Se comprueba la tercera coordenada: \(${x[2]}\).`,R`\(k=(${a})(${u[3]})+(${b})(${w[3]})=${x[3]}\).`]}}},
+{id:'t3grass',t:3,n:'Fórmula de Grassmann',ref:'Teoría 3.14.2',g(){const dE=ri(5,8),d1=ri(2,dE-1),d2=ri(2,dE-1);const sumMax=Math.min(dE,d1+d2),sumMin=Math.max(d1,d2);const s=ri(sumMin,sumMax);const i=d1+d2-s;return{q:R`En \(E\) con \(\dim E=${dE}\), se sabe que \(\dim S_1=${d1}\), \(\dim S_2=${d2}\) y \(\dim(S_1+S_2)=${s}\). Calcula \(\dim(S_1\cap S_2)\).`,a:NUM(i),hint:'dim(S₁+S₂) = dim S₁ + dim S₂ − dim(S₁∩S₂).',steps:[R`\(\dim(S_1\cap S_2)=${d1}+${d2}-${s}=${i}\).`,i===0?'Como la intersección es nula, la suma es directa.':'Como la intersección no es nula, la suma no es directa.']}}},
+{id:'t3impl',t:3,n:'Número de ecuaciones implícitas',ref:'Hoja T3 · ej. 4 y 12',g(){const r=ri(1,3);const A=ofRank(3,4,r);return{q:R`¿Cuántas ecuaciones implícitas independientes tiene \(S=\langle ${A.map(texV).join(',\\ ')}\rangle\subset\mathbb R^{4}\)?`,a:NUM(4-r),hint:'dim E = dim S + número de ecuaciones implícitas independientes.',steps:[R`\(\dim S=\mathrm{rg}=${r}\).`,R`Ecuaciones: \(4-${r}=${4-r}\).`]}}},
+{id:'t3change',t:3,n:'Cambio de base',ref:'Teoría 3.15',g(){const U=unimod(2,2),V=unimod(2,2);const xv=[ri(-3,3),ri(-3,3)];const canon=mmul(V,xv.map(x=>[x])).map(r=>r[0]);const xu=solve(toF(U),toF(canon.map(x=>[x])).map(r=>r[0]));return{q:R`Sea \(\vec x=${texV(xv)}_V\) con \(V=\{${tr(V).map(texV).join(',\\ ')}\}\) y \(U=\{${tr(U).map(texV).join(',\\ ')}\}\). Halla las coordenadas de \(\vec x\) en \(U\).`,a:{type:'vec',value:xu},hint:'Pasa primero a la base canónica y de ahí a U.',steps:[R`En canónica: \(\vec x=${texV(canon)}\).`,R`Resuelve \(${texM(U)}\,(\vec x)_U=${texM(canon.map(x=>[x]))}\).`,R`\((\vec x)_U=${texV(xu)}\).`]}}},
+{id:'t3poly',t:3,n:'Coordenadas de un polinomio',ref:'Hoja T3 · ej. 11',g(){const k=nz(1,3),m=nz(-3,3);const c=[ri(-3,3),ri(-3,3),nz(-3,3)];const q=[c[0]+c[1]*m,c[1],c[2]*k];return{q:R`En \(\mathbb P_2(x)\) con base \(B=\{1,\ x${m<0?'':'+'}${m},\ ${k===1?'':k}x^{2}\}\), halla las coordenadas de \(q(x)=${q[0]}${q[1]<0?'':'+'}${q[1]}x${q[2]<0?'':'+'}${q[2]}x^{2}\).`,a:VEC(c),hint:'Identifica coeficientes empezando por el de mayor grado.',steps:[R`Coeficiente de \(x^{2}\): \(${k}\gamma=${q[2]}\Rightarrow\gamma=${c[2]}\).`,R`Coeficiente de \(x\): \(\beta=${c[1]}\).`,R`Término independiente: \(\alpha+${m}\beta=${q[0]}\Rightarrow\alpha=${c[0]}\).`]}}},
+/* TEMA 4 */
+{id:'t4lin',t:4,n:'¿Es lineal la aplicación?',ref:'Hoja T4 · ej. 3',g(){const a=nz(-3,3),b=nz(-3,3);const T=pick([[R`(${a}x+y,\ x${b<0?'-':'+'}${Math.abs(b)}y)`,1,'Cada componente es lineal y homogénea.'],[R`(x+y,\ ${Math.abs(b)})`,0,R`\(f(\vec0)\neq\vec0\): falla la condición necesaria.`],[R`(xy,\ x-y)`,0,R`El término \(xy\) no es lineal.`],[R`(x^{2},\ y)`,0,R`\(f(2\vec x)\neq2f(\vec x)\) por el cuadrado.`],[R`(${a}y,\ 0,\ x+y)`,1,'Combinaciones lineales sin término independiente.'],[R`(x+1,\ y)`,0,R`\(f(\vec0)=(1,0)\neq\vec0\).`]]);return{q:R`¿Es lineal \(f:\mathbb R^{2}\to\mathbb R^{n}\), \(f(x,y)=${T[0]}\)?`,a:CH(['Sí','No'],T[1]?0:1),hint:'Comprueba f(0) = 0 y que no haya productos ni potencias de las variables.',steps:[T[2]]}}},
+{id:'t4mat',t:4,n:'Matriz en bases canónicas',ref:'Hoja T4 · ej. 2a',g(){const n=pick([2,3]),m=3;const A=rmat(n,m,-3,3);if(A.some(r=>r.every(x=>!x)))A[0][0]=1;return{q:R`Halla la matriz canónica de \(f(x,y,z)=\left(${A.map(r=>lin(r)).join(R`,\ `)}\right)\).`,a:MAT(A),hint:'Las columnas son f(1,0,0), f(0,1,0) y f(0,0,1). Equivale a leer los coeficientes por filas.',steps:[R`Cada fila contiene los coeficientes de una componente: \(${texM(A)}\).`]}}},
+{id:'t4img',t:4,n:'Imagen de un vector en una base',ref:'Hoja T4 · ej. 5',g(){const A=rmat(3,3,-2,3),B=unimod(3,1);const c=[ri(-2,2),ri(-2,2),ri(-2,2)];const v=mmul(B,c.map(x=>[x])).map(r=>r[0]);const y=mmul(A,v.map(x=>[x])).map(r=>r[0]);return{q:R`Sea \(f(\vec x)=A\vec x\) con \(A=${texM(A)}\). Un vector tiene coordenadas \(${texV(c)}\) en \(B=\{${tr(B).map(texV).join(',\\ ')}\}\). Calcula \(f(\vec v)\) en la base canónica.`,a:VEC(y),hint:'Calcula primero v en la base canónica y después aplica A.',steps:[R`\(\vec v=${texV(v)}\).`,R`\(f(\vec v)=A\vec v=${texV(y)}\).`]}}},
+{id:'t4ker',t:4,n:'Dimensión del núcleo',ref:'Hoja T4 · ej. 8',g(){const n=pick([2,3,4]),m=pick([3,4]);const r=ri(1,Math.min(n,m));const A=ofRank(n,m,r);return{q:R`Sea \(f:\mathbb R^{${m}}\to\mathbb R^{${n}}\) con matriz \(${texM(A)}\). Calcula \(\dim\mathrm{Ker}(f)\).`,a:NUM(m-r),hint:'dim E = dim N(f) + rg(f). E es el espacio de salida.',steps:gaussSteps(A).list.concat([R`\(\mathrm{rg}(f)=${r}\).`,R`\(\dim N(f)=${m}-${r}=${m-r}\).`])}}},
+{id:'t4class',t:4,n:'Inyectiva, sobreyectiva o biyectiva',ref:'Teoría 4.7',g(){const n=pick([2,3]),m=pick([2,3]);const r=ri(1,Math.min(n,m));const A=ofRank(n,m,r);const iny=r===m,sob=r===n;const c=iny&&sob?2:iny?0:sob?1:3;return{q:R`Clasifica \(f:\mathbb R^{${m}}\to\mathbb R^{${n}}\) con matriz \(${texM(A)}\).`,a:CH(['Solo inyectiva','Solo sobreyectiva','Biyectiva','Ni inyectiva ni sobreyectiva'],c),hint:'Inyectiva: rg = dim de salida. Sobreyectiva: rg = dim de llegada.',steps:[R`\(\mathrm{rg}(f)=${r}\); salida \(${m}\), llegada \(${n}\).`,iny?'Núcleo nulo: inyectiva.':'Núcleo no nulo: no inyectiva.',sob?'Imagen total: sobreyectiva.':'Imagen menor que el espacio de llegada: no sobreyectiva.']}}},
+{id:'t4comp',t:4,n:'Composición de aplicaciones',ref:'Hoja T4 · ej. 1',g(){const F=rmat(2,3,-2,3),G=rmat(3,2,-2,3);const C=mmul(G,F);return{q:R`Sean \(f:\mathbb R^{3}\to\mathbb R^{2}\) y \(g:\mathbb R^{2}\to\mathbb R^{3}\) con matrices \(F=${texM(F)}\) y \(G=${texM(G)}\). Halla la matriz de \(g\circ f\).`,a:MAT(C),hint:'Se aplica primero f, así que la matriz es G·F (y no F·G).',steps:[R`\((g\circ f)=G\cdot F\): de \(3\) a \(3\) dimensiones.`,R`\(G\cdot F=${texM(C)}\).`]}}},
+{id:'t4ext',t:4,n:'Aplicación conocida sobre una base',ref:'Hoja T4 · ej. 4',g(){const u=unimod(2,2);const u1=tr(u)[0],u2=tr(u)[1];const f1=[ri(-3,3),ri(-3,3),ri(-3,3)],f2=[ri(-3,3),ri(-3,3),ri(-3,3)];const a=nz(-2,3),b=nz(-2,3);const w=u1.map((x,i)=>a*x+b*u2[i]);const y=f1.map((x,i)=>a*x+b*f2[i]);return{q:R`\(f\) es lineal y \(f${texV(u1)}=${texV(f1)}\), \(f${texV(u2)}=${texV(f2)}\). Calcula \(f${texV(w)}\).`,a:VEC(y),hint:'Escribe el vector como combinación lineal de los dos dados y usa la linealidad.',steps:[R`\(${texV(w)}=${a}${texV(u1)}${b<0?'':'+'}${b}${texV(u2)}\).`,R`\(f=${a}f(\vec u_1)${b<0?'':'+'}${b}f(\vec u_2)=${texV(y)}\).`]}}},
+{id:'t4base',t:4,n:'Matriz respecto a otra base de salida',ref:'Hoja T4 · ej. 6b',g(){const A=rmat(3,2,-2,3),U=unimod(2,1);const C=mmul(A,U);return{q:R`\(f\) tiene matriz canónica \(A=${texM(A)}\). Halla su matriz respecto a \(U=\{${tr(U).map(texV).join(',\\ ')}\}\) en la salida y la canónica en la llegada.`,a:MAT(C),hint:'Las columnas son las imágenes de los vectores de U.',steps:[R`Columnas: \(f(\vec u_i)=A\vec u_i\). Equivale a \(A\cdot P\) con \(P=${texM(U)}\).`,R`\(${texM(C)}\).`]}}},
+/* TEMA 5 */
+{id:'t5val',t:5,n:'Autovalor de un autovector',ref:'Teoría 5.1',g(){const P=unimod(3,1);const D=[nz(-3,4),nz(-3,4),nz(-3,4)];const Pi=inv(P);const A=fmul(fmul(toF(P),D.map((d,i)=>D.map((_,j)=>fr(i===j?d:0)))),Pi).map(r=>r.map(x=>x.n/x.d));const j=ri(0,2);const v=tr(P)[j];const y=mmul(A,v.map(x=>[x])).map(r=>r[0]);return{q:R`\(\vec v=${texV(v)}\) es autovector de \(A=${texM(A)}\). ¿Cuál es su autovalor?`,a:NUM(D[j]),hint:'Calcula A·v y compáralo con v.',steps:[R`\(A\vec v=${texV(y)}\).`,R`\(A\vec v=${D[j]}\,\vec v\Rightarrow\lambda=${D[j]}\).`]}}},
+{id:'t5char',t:5,n:'Autovalores 2×2',ref:'Teoría 5.2',g(){const a=ri(-4,5),b=ri(-4,5);if(a===b)return SK.find(s=>s.id==='t5char').g();const l1=Math.max(a,b),l2=Math.min(a,b);const P=unimod(2,1);const A=fmul(fmul(toF(P),[[fr(l1),fr(0)],[fr(0),fr(l2)]]),inv(P)).map(r=>r.map(x=>x.n/x.d));const t=l1+l2,d=l1*l2;return{q:R`Halla el mayor autovalor de \(A=${texM(A)}\).`,a:NUM(l1),hint:'P(λ) = λ² − tr(A)·λ + |A|.',steps:[R`\(\mathrm{tr}(A)=${t}\), \(|A|=${d}\).`,R`\(P(\lambda)=${polyTex([fr(1),fr(-t),fr(d)])}=0\).`,R`Raíces: \(${l1}\) y \(${l2}\).`]}}},
+{id:'t5mg',t:5,n:'Multiplicidad geométrica',ref:'Teoría 5.2',g(){const l=nz(-3,3),m=l+nz(1,3);const b=pick([0,0,ri(-3,3)]),c=ri(-3,3),d=ri(-3,3);const A=[[l,b,c],[0,l,d],[0,0,m]];const B=A.map((r,i)=>r.map((x,j)=>x-(i===j?l:0)));const r=rank(B);return{q:R`Para \(A=${texM(A)}\), calcula \(m_g(${l})\).`,a:NUM(3-r),hint:'m_g(λ) = n − rg(A − λI).',steps:[R`\(A-(${l})I=${texM(B)}\), de rango \(${r}\).`,R`\(m_g=3-${r}=${3-r}\).`]}}},
+{id:'t5diag',t:5,n:'¿Es diagonalizable?',ref:'Hoja T5 · ej. 5',g(){const l=nz(-3,3),m=l+nz(1,3);const b=pick([0,nz(-3,3)]),c=ri(-3,3),d=ri(-3,3);const A=[[l,b,c],[0,l,d],[0,0,m]];const B=A.map((r,i)=>r.map((x,j)=>x-(i===j?l:0)));const r=rank(B);const ok=3-r===2;return{q:R`¿Es diagonalizable \(A=${texM(A)}\)?`,a:CH(['Sí','No'],ok?0:1),hint:'Triangular: los autovalores están en la diagonal. Compara m_a y m_g del autovalor doble.',steps:[R`\(\lambda=${l}\) con \(m_a=2\) y \(\lambda=${m}\) con \(m_a=1\).`,R`\(\mathrm{rg}(A-(${l})I)=${r}\Rightarrow m_g(${l})=${3-r}\).`,ok?'Coinciden las multiplicidades: diagonalizable.':R`\(m_g<m_a\): no diagonalizable.`]}}},
+{id:'t5inv',t:5,n:'Traza y determinante invariantes',ref:'Teoría 5.3',g(){const D=[nz(-3,4),nz(-3,4),nz(-3,4)];const ask=pick(['tr','det']);const v=ask==='tr'?D[0]+D[1]+D[2]:D[0]*D[1]*D[2];return{q:R`\(A\) es semejante a \(\mathrm{diag}(${D.join(',')})\). Calcula \(${ask==='tr'?R`\mathrm{tr}(A)`:'|A|'}\).`,a:NUM(v),hint:'Las matrices semejantes comparten polinomio característico, traza y determinante.',steps:[ask==='tr'?R`Traza = suma de autovalores = \(${v}\).`:R`Determinante = producto de autovalores = \(${v}\).`]}}},
+{id:'t5sym',t:5,n:'Diagonalización ortogonal',ref:'Hoja T5 · ej. 1',g(){const s=ri(-3,4),t=nz(1,4);const A=[[s,t],[t,s]];return{q:R`Calcula el menor autovalor de la matriz simétrica \(A=${texM(A)}\).`,a:NUM(s-t),hint:'Prueba con los vectores (1,1) y (1,−1).',steps:[R`\(A(1,1)^{t}=${s+t}(1,1)^{t}\) y \(A(1,-1)^{t}=${s-t}(1,-1)^{t}\).`,R`Autovectores ortogonales: \(P=\frac{1}{\sqrt2}\begin{pmatrix}1&1\\1&-1\end{pmatrix}\), con \(P^{-1}=P^{t}\).`,R`\(D=\mathrm{diag}(${s+t},${s-t})\), así que el menor es \(${s-t}\).`]}}},
+{id:'t5sum',t:5,n:'¿Cuántos autovalores distintos bastan?',ref:'Teoría 5.3',g(){const n=ri(2,5);const k=ri(1,n);const sure=k===n;return{q:`Un endomorfismo de ℝ${n===2?'²':n===3?'³':n===4?'⁴':'⁵'} tiene ${k} autovalor${k>1?'es':''} real${k>1?'es':''} distinto${k>1?'s':''} y su polinomio se descompone en ℝ. ¿Se puede asegurar que es diagonalizable sin más datos?`,a:CH(['Sí','No'],sure?0:1),hint:'Solo n autovalores distintos garantizan la diagonalización.',steps:[sure?'Con n autovalores distintos cada multiplicidad vale 1 y coinciden: es diagonalizable.':'Hay un autovalor múltiple. Hay que comprobar sus multiplicidades geométricas.']}}},
+];
+const TN={1:'Matrices y determinantes',2:'Sistemas de ecuaciones',3:'Espacios vectoriales',4:'Aplicaciones lineales',5:'Diagonalización'};
+const TEMAS=[1,2,3,4,5];
+/* ---------- verdadero/falso de teoría ---------- */
+const VF={1:[
+['Si A y B son matrices cuadradas, siempre se cumple AB = BA.',0,'El producto no es conmutativo en general.'],
+[R`\((AB)^{t}=B^{t}A^{t}\).`,1,'La traspuesta invierte el orden del producto.'],
+[R`Si \(A^{3}=0\), entonces \(|A|=0\).`,1,R`\(|A|^{3}=|A^{3}|=0\).`],
+['El producto de dos matrices ortogonales es ortogonal.',1,R`\((AB)(AB)^{t}=ABB^{t}A^{t}=I\).`],
+['El producto de dos matrices idempotentes siempre es idempotente.',0,'Falla si A y B no conmutan.'],
+['Multiplicar una fila por 3 multiplica por 3 el determinante.',1,'Solo una fila: multiplicar toda la matriz daría 3ⁿ.'],
+[R`Si \(A\) es simétrica, \(B^{t}AB\) también lo es.`,1,R`\((B^{t}AB)^{t}=B^{t}A^{t}B=B^{t}AB\).`],
+['Una matriz antisimétrica de orden impar es singular.',1,R`\(|A|=|A^{t}|=|-A|=(-1)^{n}|A|\) obliga a \(|A|=0\).`]],
+2:[
+['Un sistema homogéneo siempre es compatible.',1,'La solución trivial siempre existe.'],
+[R`Si \(\mathrm{rg}(A)<\mathrm{rg}(M)\), el sistema es incompatible.`,1,'Es el teorema de Rouché-Fröbenius.'],
+['Cramer se aplica directamente a cualquier sistema compatible.',0,'Requiere matriz cuadrada regular. En un caso indeterminado se aplica tras pasar las variables libres.'],
+['Un sistema con más ecuaciones que incógnitas nunca es compatible.',0,'Puede serlo si las ecuaciones sobrantes son combinación lineal de las demás.'],
+['Un sistema con menos ecuaciones que incógnitas no puede ser compatible determinado.',1,'El rango no alcanza el número de incógnitas.'],
+['Multiplicar una ecuación por cero da un sistema equivalente.',0,'El escalar debe ser no nulo.'],
+['Dos sistemas son equivalentes si tienen las mismas soluciones.',1,'Es la definición.']],
+3:[
+['Todo subespacio contiene al vector nulo.',1,'Se obtiene tomando el escalar 0.'],
+['La unión de dos subespacios siempre es un subespacio.',0,'En general no es cerrada para la suma. Lo es la suma de subespacios.'],
+['Un sistema que contiene al vector nulo es ligado.',1,'El vector nulo admite coeficiente no nulo.'],
+['En un espacio de dimensión n, n+1 vectores siempre son ligados.',1,'Un sistema libre tiene como máximo n vectores.'],
+['Cualquier sistema generador es una base.',0,'También debe ser libre.'],
+['Las coordenadas de un vector en una base son únicas.',1,'Es consecuencia de que la base es libre y generadora.'],
+[R`Suplementarios significa \(S_1+S_2=E\) y \(S_1\cap S_2=\{\vec0\}\).`,1,'Es la caracterización de la suma directa igual a E.'],
+[R`\(\dim\mathbb P_3(x)=3\).`,0,'Vale 4: su base canónica es 1, x, x², x³.']],
+4:[
+[R`Si \(f\) es lineal, \(f(\vec0_E)=\vec0_F\).`,1,'Es condición necesaria de linealidad.'],
+[R`Si \(f(\vec0)=\vec0\), entonces \(f\) es lineal.`,0,'Es necesaria, no suficiente. Por ejemplo f(x,y) = (xy, 0).'],
+[R`\(f\) es inyectiva si y solo si \(N(f)=\{\vec0\}\).`,1,'Es la caracterización del tema.'],
+[R`\(\dim E=\dim N(f)+\mathrm{rg}(f)\).`,1,'E es el espacio de salida.'],
+['Si dim E > dim F, f puede ser inyectiva.',0,'El núcleo tendrá dimensión al menos dim E − dim F > 0.'],
+['Una aplicación de libre a imagen ligada es imposible.',0,'Sí puede ocurrir. Lo que se conserva es: ligado va a ligado.'],
+[R`La matriz de \(g\circ f\) es el producto \(G\cdot F\).`,1,'Se aplica primero f, cuya matriz va a la derecha.'],
+['Un endomorfismo biyectivo se llama automorfismo.',1,'Es la definición.']],
+5:[
+['Un autovector puede ser el vector nulo.',0,'Por definición es no nulo.'],
+[R`Siempre \(1\le m_g(\lambda)\le m_a(\lambda)\).`,1,'Es la proposición del tema.'],
+['Con n autovalores distintos, el endomorfismo es diagonalizable.',1,'Todas las multiplicidades valen 1.'],
+['Toda matriz simétrica real es diagonalizable ortogonalmente.',1,'Es el teorema del endomorfismo simétrico.'],
+['Dos matrices semejantes tienen el mismo determinante y la misma traza.',1,'Comparten polinomio característico.'],
+['Dos autovectores de autovalores distintos pueden ser dependientes.',0,'Siempre son linealmente independientes.'],
+['Si A es diagonalizable ortogonalmente, D = PᵗAP.',1,'P es ortogonal, por lo que P⁻¹ = Pᵗ.'],
+['Tener el mismo polinomio característico implica ser semejantes.',0,'Es necesario, no suficiente: la identidad 2×2 y (1 1; 0 1) lo comparten.']]};
+TEMAS.forEach(t=>SK.push({id:'t'+t+'vf',t,n:'Teoría: verdadero o falso',ref:'Teoría T'+t,g(){const x=pick(VF[t]);return{q:x[0],a:CH(['Verdadero','Falso'],x[1]?0:1),hint:'Recuerda la definición o busca un contraejemplo sencillo.',steps:[x[2]]}}}));
+/* ---------- tarjetas ---------- */
+const CARDS={1:[
+['Matriz regular',R`\(A\) cuadrada con inversa. Equivale a \(|A|\neq0\). Si no, es singular.`],
+['Matriz ortogonal',R`\(AA^{t}=A^{t}A=I\), es decir, \(A^{-1}=A^{t}\). Su determinante es \(\pm1\).`],
+['Simétrica y antisimétrica',R`Simétrica: \(A=A^{t}\). Antisimétrica: \(A=-A^{t}\), con diagonal nula.`],
+['Adjunto de \(a_{ij}\)',R`\(A_{ij}=(-1)^{i+j}\alpha_{ij}\), con \(\alpha_{ij}\) el menor complementario.`],
+['Inversa por adjuntos',R`\(A^{-1}=\dfrac{(A^{d})^{t}}{|A|}\)`],
+['Rango',R`Orden del mayor menor no nulo. También: número de filas no nulas al escalonar.`],
+['Efecto en \(|A|\) de operar filas',R`Intercambiar: cambia el signo. Multiplicar una fila por \(k\): multiplica por \(k\). Sumar un múltiplo de otra: no cambia.`],
+[R`\(|kA|\) en orden \(n\)`,R`\(k^{n}|A|\)`],
+[R`\((AB)^{-1}\) y \((AB)^{t}\)`,R`\(B^{-1}A^{-1}\) y \(B^{t}A^{t}\): invierten el orden.`],
+['Método de Chio','Elige un pivote, anula el resto de su fila o columna y desarrolla por adjuntos.']],
+2:[
+['Rouché-Fröbenius',R`Compatible \(\iff\mathrm{rg}(A)=\mathrm{rg}(M)\). Determinado si además coincide con el número de incógnitas.`],
+['Homogéneo',R`Todos los \(b_i=0\). Siempre compatible. Solución no trivial \(\iff\mathrm{rg}(A)<p\).`],
+['Regla de Cramer',R`\(x_i=\dfrac{|A_i|}{|A|}\), con \(A_i\) sustituyendo la columna \(i\) por \(\vec b\). Requiere \(|A|\neq0\).`],
+['Matriz ampliada',R`\(M=(A|\vec b)\)`],
+['Variables libres',R`Número de incógnitas menos \(\mathrm{rg}(A)\).`],
+['Sistemas equivalentes','Tienen las mismas soluciones.'],
+['Operaciones que mantienen la equivalencia','Quitar una ecuación que sea combinación de otras, multiplicar por un escalar no nulo, y sumar a una ecuación una combinación de otras.'],
+['Método general','1) Menor no nulo de orden k. 2) Quedarse con sus k ecuaciones. 3) Pasar las libres a la derecha. 4) Resolver, por ejemplo con Cramer.']],
+3:[
+['Subespacio vectorial',R`\(S\) cumple \(\alpha\vec x+\beta\vec y\in S\) para todo \(\alpha,\beta\in K\), \(\vec x,\vec y\in S\).`],
+['Sistema libre',R`\(\sum\alpha_i\vec v_i=\vec0\) solo con todos los \(\alpha_i=0\).`],
+['Base','Sistema libre y generador.'],
+['Dimensión','Número de vectores de cualquier base.'],
+['Grassmann',R`\(\dim(S_1+S_2)=\dim S_1+\dim S_2-\dim(S_1\cap S_2)\)`],
+['Suma directa',R`\(S_1\cap S_2=\{\vec0\}\). Cada vector de la suma se descompone de forma única.`],
+['Suplementarios',R`\(S_1\oplus S_2=E\)`],
+['Ecuaciones implícitas',R`\(\dim E=\dim S+\) número de ecuaciones implícitas independientes.`],
+['Teorema de la base incompleta','Todo sistema libre se puede ampliar hasta formar una base.'],
+['Cambio de base',R`\((\vec x)_U=(\vec v_1,\dots,\vec v_n)_U(\vec x)_V\): columnas = vectores de V en U.`],
+[R`\(\dim\mathbb P_n(x)\)`,R`\(n+1\)`]],
+4:[
+['Aplicación lineal',R`\(f(\alpha\vec x+\beta\vec y)=\alpha f(\vec x)+\beta f(\vec y)\)`],
+['Monomorfismo, epimorfismo, isomorfismo','Lineal e inyectiva, sobreyectiva y biyectiva, respectivamente.'],
+['Endomorfismo y automorfismo',R`Endomorfismo: \(E=F\). Automorfismo: endomorfismo biyectivo.`],
+['Núcleo',R`\(N(f)=\{\vec x\in E/f(\vec x)=\vec0_F\}\)`],
+['Imagen',R`\(\mathrm{Im}(f)=\langle f(\vec u_1),\dots,f(\vec u_p)\rangle\)`],
+['Dimensiones',R`\(\dim E=\dim N(f)+\mathrm{rg}(f)\)`],
+['Columnas de \(f_{U,V}\)','Coordenadas en V de las imágenes de los vectores de U.'],
+['Inyectiva',R`\(N(f)=\{\vec0\}\iff\dim\mathrm{Im}(f)=\dim E\)`],
+['Sobreyectiva',R`\(\mathrm{Im}(f)=F\iff\mathrm{rg}(f)=\dim F\)`],
+['Composición',R`\((g\circ f)_{U,T}=g_{V,T}\cdot f_{U,V}\)`]],
+5:[
+['Autovector y autovalor',R`\(\vec x\neq\vec0\) con \(f(\vec x)=\lambda\vec x\).`],
+['Ecuación característica',R`\(|A-\lambda I|=0\)`],
+['Subespacio propio',R`\(E_\lambda=\mathrm{Ker}(f-\lambda i)\)`],
+['Multiplicidad algebraica','Multiplicidad de λ como raíz del polinomio característico.'],
+['Multiplicidad geométrica',R`\(m_g(\lambda)=\dim E_\lambda=n-\mathrm{rg}(A-\lambda I)\)`],
+['Criterio de diagonalización',R`\(\sum m_a(\lambda_j)=n\) y \(m_a(\lambda_j)=m_g(\lambda_j)\) para todo \(j\).`],
+['Matrices semejantes',R`\(B=P^{-1}AP\). Comparten polinomio característico, determinante y traza.`],
+['Forma diagonal',R`\(D=P^{-1}AP\), con los autovectores como columnas de \(P\).`],
+['Diagonalización ortogonal',R`\(D=P^{t}AP\). Es posible si y solo si \(A\) es simétrica.`],
+['Autovectores de una simétrica','Los de autovalores distintos son ortogonales. Se normalizan para formar P.']]};
+const ALLCARDS=TEMAS.flatMap(t=>CARDS[t].map((c,i)=>({id:`c${t}_${i}`,t,f:c[0],b:c[1]})));
+/* ---------- temario ---------- */
+const TH={1:[
+['Tipos de matrices',R`<ul><li>Fila, columna, cuadrada, rectangular y nula.</li><li>Triangular superior: \(a_{ij}=0\) si \(i>j\). Triangular inferior: \(a_{ij}=0\) si \(i<j\).</li><li>Diagonal, e identidad \(I_n\).</li><li>Simétrica: \(A=A^{t}\). Antisimétrica: \(A=-A^{t}\). Ortogonal: \(A^{-1}=A^{t}\).</li></ul>`],
+['Operaciones',R`<p>El producto \(A_{n\times p}\cdot B_{p\times q}\) es \(n\times q\) y \(c_{ij}=\sum_k a_{ik}b_{kj}\).</p><div class="trap">Cuidado: en general \(AB\neq BA\), por lo que \((A+B)^{2}=A^{2}+AB+BA+B^{2}\).</div>`],
+['Determinantes',R`<div class="box">\(\begin{vmatrix}a&b\\c&d\end{vmatrix}=ad-bc\)</div><p>En orden 3 se usa Sarrus. En orden superior hay tres métodos:</p><ul><li><b>Adjuntos:</b> \(|A|=\sum_j a_{ij}A_{ij}\), con \(A_{ij}=(-1)^{i+j}\alpha_{ij}\). Elige la fila o columna con más ceros.</li><li><b>Chio:</b> anula el resto de la fila o columna de un pivote y desarrolla.</li><li><b>Escalonar:</b> el determinante es el producto de la diagonal.</li></ul>`],
+['Propiedades que más se usan',R`<ul><li>Intercambiar dos filas: cambia el signo.</li><li>Multiplicar una fila por \(k\): multiplica por \(k\). Por tanto \(|kA|=k^{n}|A|\).</li><li>Sumar a una fila una combinación de otras: no cambia.</li><li>Una fila combinación de las demás: \(|A|=0\).</li><li>\(|AB|=|A||B|\), \(|A^{t}|=|A|\), \(|A^{-1}|=1/|A|\).</li></ul>`],
+['Traspuesta e inversa',R`<div class="box">\((AB)^{t}=B^{t}A^{t}\qquad(AB)^{-1}=B^{-1}A^{-1}\qquad(A^{-1})^{t}=(A^{t})^{-1}\)</div><p>Inversa por adjuntos: \(A^{-1}=(A^{d})^{t}/|A|\). Por Gauss: \((A|I)\to(I|A^{-1})\).</p>`],
+['Rango y potencias',R`<p>El rango es el orden del mayor menor no nulo. No varía al multiplicar una fila por un escalar no nulo, al sumarle una combinación de otras o al suprimir una fila dependiente.</p><p>Para \(A^{n}\): calcula \(A^{2},A^{3}\), busca el patrón y justifícalo por inducción.</p>`]],
+2:[
+['Planteamiento',R`<p>\(A\vec x=\vec b\), con matriz ampliada \(M=(A|\vec b)\). Homogéneo si \(\vec b=\vec0\): siempre compatible.</p>`],
+['Rouché-Fröbenius',R`<div class="box">\(\mathrm{rg}(A)\neq\mathrm{rg}(M)\Rightarrow\) incompatible<br>\(\mathrm{rg}(A)=\mathrm{rg}(M)=p\Rightarrow\) compatible determinado<br>\(\mathrm{rg}(A)=\mathrm{rg}(M)<p\Rightarrow\) compatible indeterminado</div>`],
+['Regla de Cramer',R`<p>Para \(|A|\neq0\): \(x_i=|A_i|/|A|\). \(A_i\) sustituye la columna \(i\) por \(\vec b\).</p>`],
+['Método de Gauss',R`<p>Escalona la ampliada con operaciones que mantienen la equivalencia. Una fila \(0=c\neq0\) indica incompatible. Una fila \(0=0\) desaparece.</p>`],
+['Método general',R`<ol style="margin:0;padding-left:20px"><li>Elige un menor no nulo de orden \(k=\mathrm{rg}(A)\).</li><li>Conserva sus \(k\) ecuaciones.</li><li>Pasa las variables libres a la derecha.</li><li>Resuelve las básicas en función de las libres.</li></ol>`],
+['Discutir con parámetro',R`<ol style="margin:0;padding-left:20px"><li>Si es cuadrado, calcula \(|A|\) y halla sus raíces.</li><li>Para otros valores, compatible determinado.</li><li>Para cada raíz, sustituye y compara \(\mathrm{rg}(A)\) y \(\mathrm{rg}(M)\).</li></ol><div class="trap">No basta con \(|A|=0\) para decidir: debes mirar la ampliada en cada raíz.</div>`]],
+3:[
+['Estructuras algebraicas',R`<p>Grupo: operación asociativa, con neutro y simétrico. Abeliano si además conmuta. Anillo: \((A,+)\) abeliano y producto asociativo y distributivo. Cuerpo: dominio de integridad donde todo elemento no nulo tiene inverso.</p>`],
+['Espacio vectorial y subespacio',R`<p>Ejemplos: \(\mathbb R^{n}\), \(\mathbb P_n(x)\) y \(M_{n\times m}\).</p><div class="box">\(S\) es subespacio \(\iff\alpha\vec x+\beta\vec y\in S\quad\forall\alpha,\beta\in K,\ \vec x,\vec y\in S\)</div><p>Prueba rápida: si \(\vec0\notin S\), no es subespacio.</p>`],
+['Combinación lineal e independencia',R`<p>\(\langle P\rangle\) es el conjunto de combinaciones lineales de \(P\), y siempre es un subespacio. Un sistema es libre si \(\sum\alpha_i\vec v_i=\vec0\) obliga a \(\alpha_i=0\).</p><p>En la práctica: el rango de la matriz de vectores debe ser igual al número de vectores.</p>`],
+['Base y dimensión',R`<p>Base: sistema libre y generador. Las coordenadas son únicas. Dimensiones: \(\dim\mathbb R^{n}=n\), \(\dim\mathbb P_n=n+1\).</p>`],
+['Paramétricas e implícitas',R`<p>Paramétricas: \(\vec x=t_1\vec s_1+\dots+t_r\vec s_r\). Implícitas: sistema homogéneo.</p><div class="box">\(\dim E=\dim S+\) n.º de implícitas independientes</div><p>De paramétricas a implícitas: exige \(\mathrm{rg}(\vec s_1,\dots,\vec s_r)=\mathrm{rg}(\vec s_1,\dots,\vec s_r,\vec x)\).</p>`],
+['Operaciones con subespacios',R`<p>Intersección: junta las ecuaciones implícitas. Suma: une los sistemas generadores.</p><div class="box">\(\dim(S_1+S_2)=\dim S_1+\dim S_2-\dim(S_1\cap S_2)\)</div><p>Directa: \(S_1\cap S_2=\{\vec0\}\). Suplementarios: directa y además \(S_1+S_2=E\).</p>`],
+['Cambio de base',R`<div class="box">\((\vec x)_U=(\vec v_1,\dots,\vec v_n)_U\,(\vec x)_V\)</div><p>Las columnas son los vectores de \(V\) expresados en \(U\).</p>`]],
+4:[
+['Definición y clasificación',R`<div class="box">\(f(\alpha\vec x+\beta\vec y)=\alpha f(\vec x)+\beta f(\vec y)\)</div><p>Inyectiva, mono. Sobreyectiva, epi. Biyectiva, iso. Con \(E=F\): endomorfismo, y automorfismo si es biyectivo.</p>`],
+['Propiedades',R`<p>\(f(\vec0)=\vec0\) y \(f(-\vec x)=-f(\vec x)\). Un sistema ligado da una imagen ligada. Si la imagen es libre, el original es libre.</p><div class="trap">Lo contrario no es cierto: un sistema libre puede tener imagen ligada.</div>`],
+['Matriz de la aplicación',R`<p>Las columnas de \(f_{U,V}\) son las coordenadas en \(V\) de \(f(\vec u_j)\).</p><div class="box">\((\vec y)_V=f_{U,V}\,(\vec x)_U\)</div>`],
+['Núcleo e imagen',R`<p>\(N(f)\): resuelve \(A\vec x=\vec0\). \(\mathrm{Im}(f)\): generada por las columnas de \(A\).</p><div class="box">\(\dim E=\dim N(f)+\mathrm{rg}(f)\)</div><p>Inyectiva: \(N(f)=\{\vec0\}\). Sobreyectiva: \(\mathrm{Im}(f)=F\).</p>`],
+['Operaciones',R`<p>Suma: \((f+g)_{U,V}=f_{U,V}+g_{U,V}\). Escalar: \((\alpha f)_{U,V}=\alpha f_{U,V}\).</p><div class="box">\((g\circ f)_{U,T}=g_{V,T}\cdot f_{U,V}\)</div>`]],
+5:[
+['Autovalores y autovectores',R`<p>\(\vec x\neq\vec0\) con \(A\vec x=\lambda\vec x\). Los \(\lambda\) son raíces de \(P(\lambda)=|A-\lambda I|\). \(E_\lambda=\mathrm{Ker}(A-\lambda I)\).</p>`],
+['Multiplicidades',R`<div class="box">\(1\le m_g(\lambda)\le m_a(\lambda)\qquad m_g(\lambda)=n-\mathrm{rg}(A-\lambda I)\)</div>`],
+['Semejanza',R`<p>\(B=P^{-1}AP\Rightarrow\) mismo \(P(\lambda)\), determinante y traza. La traza es la suma de autovalores y el determinante su producto.</p>`],
+['Diagonalización',R`<ol style="margin:0;padding-left:20px"><li>Calcula las raíces de \(P(\lambda)\): todas deben estar en \(K\).</li><li>Comprueba \(m_g=m_a\) en las múltiples.</li><li>\(D=P^{-1}AP\): autovalores en \(D\), autovectores en las columnas de \(P\), en el mismo orden.</li></ol><p>Con \(n\) autovalores distintos ya es diagonalizable.</p>`],
+['Caso simétrico',R`<p>Toda simétrica real tiene \(n\) autovalores reales, y es diagonalizable ortogonalmente. Autovectores de autovalores distintos son ortogonales.</p><div class="box">\(D=P^{t}AP,\quad P^{-1}=P^{t}\)</div><p>Normaliza los vectores. En un autovalor múltiple, ortogonaliza su base.</p>`]]};
+/* ---------- guía de hojas y erratas ---------- */
+const ERR=[
+{t:1,e:'13a',of:'Aⁿ = 0 para n > 3',ok:'Es nula ya para n ≥ 3: A³ = 0.',k:'Aclaración'},
+{t:2,e:'4',of:'No existe ningún valor de m',ok:'Con m = 3 ambos sistemas son incompatibles, y por la definición de la teoría tendrían las mismas soluciones (ninguna). Consulta qué criterio aplica la profesora.',k:'A consultar'},
+{t:2,e:'6a',of:'a ≠ 1 o a ≠ −2; y para a = 1, x = 1 − y − z',ok:'Debe ser a ≠ 1 y a ≠ −2. Para a = 1, x = −y − z: el sistema es homogéneo.',k:'Errata'},
+{t:3,e:'6',of:'k = 15',ok:'Sale k = 17: α = −1 y β = −8, luego k = 1 + 16.',k:'Errata'},
+{t:3,e:'12b',of:'3x − 4y − z = 0',ok:'La ecuación correcta es 3x − 4y − t = 0. La publicada no la cumple v₁ = (2,1,3,2).',k:'Errata'},
+{t:4,e:'2b, 2c, 2d',of:'b) columnas 3 y 4: (3,0,3) y (0,0,−1). c) columna 3: (−1,1,3). d) columna 3: (3,0,4)',ok:'f(u₃) = (1,1,3), no (−1,1,3). Correctas: b) columnas (4,1,4) y (−1,−1,−2); c) columna (1,1,3); d) columna (5,2,6).',k:'Errata'},
+{t:4,e:'9',of:'Enunciado: f: R³ → R³',ok:'Por la matriz 2×3 y la base B, debe ser f: R³ → R².',k:'Errata'},
+{t:5,e:'7',of:'Primera columna de P: (1,0,1)',ok:'(1,0,1) no es autovector en general. Una válida para λ = a es (0,1,0).',k:'Errata'}];
+const GUIDE={1:[[1,'Determinante triangulando','Resta filas y aparecen dos iguales','|A| = 0','t1det4'],[2,'Rangos','Escalona cada matriz','2, 3, 3, 3','t1rank'],[3,'Matrices que conmutan','Plantea AB = BA con incógnitas','Familia de 5 parámetros','t1prod'],[4,'Ecuaciones con X','Despeja respetando el orden','Tres matrices X','t1eq'],[5,'Expresión con traspuestas','(BᵗA)ᵗ = AᵗB','−AᵗB','t1vf'],[6,'|2A²B|','k elevado al orden','300','t1detprop'],[7,'Igualdad sin desarrollar','Saca factores de columnas y filas','Demostración','t1vf'],[8,'Dos demostraciones','Usa |Aᵐ| y (ABC)ᵗ','Demostración','t1vf'],[9,'Verdadero o falso','Prueba o contraejemplo','a) V, b) F','t1vf'],[10,'Inversas por Gauss','(A|I) → (I|A⁻¹)','Dos matrices','t1inv'],[11,'Simplificar simétricas','Aᵗ = A, sin conmutar','A²−B² y BA−AB','t1vf'],[12,'Por adjuntos','Fila o columna con ceros','80 y −260','t1det4'],[13,'Potencias','Patrón e inducción','Ver errata en 13a','t1pow'],[14,'Rangos con parámetros','Raíces de |A| y estudio','Casos','t1rankpar']],
+2:[[1,'Discutir con a','|A| y estudio de raíces','Casos por a','t2param'],[2,'Tres métodos','Gauss, Cramer e inversa','(4, 5, 2)','t2solve'],[3,'Condición de compatibilidad','Escalona con a, b y c','−3a+b+c=0; siempre','t2class'],[4,'Sistemas equivalentes','Resuelve S₁ primero','Ver nota','t2class'],[5,'Homogéneo no trivial','|A| = 0','k = 3','t2hom'],[6,'Existencia y solución','Rouché y resolver','Ver errata en 6a','t2param'],[7,'Discutir y resolver','Combina E₂ + E₃ con E₁','a = 1, incompatible','t2param'],[8,'Dos parámetros 4×4','Determinante y casos','a=b=0: (3, y, 1, −4)','t2class'],[9,'Clasificar con a y b','Primero |A|, luego ampliada','Casos','t2param']],
+3:[[1,'¿Subespacio?','Vector nulo y linealidad','Sí, no, no, sí','t3sub'],[2,'Completar bases','Añade vectores hasta rango 4','Varias válidas','t3li'],[3,'Suma e intersección','Implícitas y generadores','V₂ y V₃ suplementarios','t3grass'],[4,'Implícitas','Rangos o eliminar parámetros','2 ecuaciones','t3impl'],[5,'Envoltura','Elimina dependientes','dim = 2','t3dim'],[6,'Combinación lineal','Coordenadas conocidas','Ver errata','t3comb'],[7,'U y V','Bases, U∩V y U+V','U+V = R⁴','t3grass'],[8,'W₁ y W₂','Grassmann','No directa','t3grass'],[9,'Pertenencia y coordenadas','Sistemas','(2,0) y (2)','t3coord'],[10,'Coordenadas','Sistema por base','(−5/3, −1/3) y (2/3, −5/3, 2/3)','t3coord'],[11,'Polinomios','Identificar coeficientes','(0,2,4,−5,1)','t3poly'],[12,'Con parámetro a','Rango y eliminación','Ver errata en 12b','t3impl'],[13,'p′(−1) = 0','Condición sobre coeficientes','dim = 3','t3poly'],[14,'Igual subespacio','Mismo plano','a = 3, b = 2','t3comb'],[15,'Coordenadas en R²','Sustituir','w = (0, −7)','t3change'],[16,'Subespacios de P₃','Traducir a coeficientes','dim 2, 3, 1, 2','t3poly']],
+4:[[1,'g∘f','Sustituye f en g','Ecuaciones','t4comp'],[2,'Cuatro matrices','Imágenes y coordenadas','Ver errata en b, c y d','t4mat'],[3,'¿Lineal?','Vector nulo y productos','Sí, no, sí, no','t4lin'],[4,'Datos sobre base','Combinación lineal','(2,1,3) y (0,−5,7)','t4ext'],[5,'Imagen en base','Pasa a canónica','(−1,8,3) y (1,0,2)','t4img'],[6,'Cambios de base','Calcula columnas','Cuatro sistemas','t4base'],[7,'Datos combinados','Despeja f(uᵢ)','Una matriz','t4base'],[8,'Núcleo e imagen','Rango y sistemas','Ver hoja','t4ker'],[9,'Clasificar y cambiar base','N(f), Im(f), matriz','Homomorfismo','t4class']],
+5:[[1,'Ortogonal','Autovectores normalizados','Dos diagonalizaciones','t5sym'],[2,'Parámetros a y b','Triangular, m_g de λ = 1','Solo con a = 0','t5mg'],[3,'Autovalor triple','P(λ) = (a−λ)³ − 2bc(a−λ)','b = 0 o c = 0','t5char'],[4,'Base diagonalizante','Autovectores','a) sí, b) no','t5diag'],[5,'Casos con parámetros','Compara m_a y m_g','Casos','t5diag'],[6,'Simétrica con datos','Plantea incógnitas','Autovalores 0, 3, 6','t5sym'],[7,'Parámetros y diagonaliza','Autovalores a, a, b','Ver errata','t5diag']]};
+/* ---------- estado ---------- */
+const KEY='cuaderno-civil-v1';
+let S={skills:{},cards:{},exams:[],days:{},examDate:'',ts:0};
+try{const x=localStorage.getItem(KEY);if(x)S=Object.assign(S,JSON.parse(x))}catch(e){}
+let dbRef=null,saveT;
+function save(){S.ts=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}clearTimeout(saveT);saveT=setTimeout(()=>{if(dbRef)dbRef.set(JSON.parse(JSON.stringify(S))).catch(()=>{})},800)}
+(async()=>{try{if(!window.claude)return;const [db,user]=await Promise.all([claude.use('db'),claude.use('user')]);if(!db||!user)return;const id=await user.id();if(!id)return;dbRef=db.collection('data/users/'+id).doc('algebra');const sn=await dbRef.get();if(sn.exists){const d=sn.data();if((d.ts||0)>S.ts){S=Object.assign(S,JSON.parse(JSON.stringify(d)));route()}}else if(S.ts)save();
+  document.getElementById('savenote').textContent='Tu progreso se guarda en tu cuenta.'}catch(e){}})();
+const today=()=>new Date().toISOString().slice(0,10);
+const dayAdd=n=>{const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)};
+function record(id,ok){const s=S.skills[id]||(S.skills[id]={r:[],tot:0,ok:0});s.r.push(ok?1:0);if(s.r.length>5)s.r.shift();s.tot++;if(ok)s.ok++;S.days[today()]=(S.days[today()]||0)+1;save()}
+const skScore=id=>{const s=S.skills[id];return s&&s.r.length?s.r.reduce((a,b)=>a+b)/5:0};
+function mastery(t){const sk=SK.filter(s=>s.t===t);const a=sk.reduce((x,s)=>x+skScore(s.id),0)/sk.length;const cs=ALLCARDS.filter(c=>c.t===t);const b=cs.reduce((x,c)=>x+((S.cards[c.id]||{box:0}).box)/5,0)/cs.length;return Math.round((a*.75+b*.25)*100)}
+function weakest(t){const sk=SK.filter(s=>(!t||s.t===t));const min=Math.min(...sk.map(s=>skScore(s.id)));return pick(sk.filter(s=>skScore(s.id)===min))}
+const dueCards=(t)=>ALLCARDS.filter(c=>(!t||c.t===t)&&(!(S.cards[c.id])||S.cards[c.id].due<=today()));
+function streak(){let n=0;const d=new Date();if(!S.days[today()])d.setDate(d.getDate()-1);while(S.days[d.toISOString().slice(0,10)]){n++;d.setDate(d.getDate()-1)}return n}
+/* ---------- render base ---------- */
+const V=document.getElementById('view');
+function math(el){const go=()=>window.MathJax&&MathJax.typesetPromise?MathJax.typesetPromise([el]).catch(()=>{}):null;if(window.MathJax&&MathJax.typesetPromise)go();else{let n=0;const t=setInterval(()=>{if((window.MathJax&&MathJax.typesetPromise)||n++>60){clearInterval(t);go()}},150)}}
+function show(html){V.innerHTML=html;V.classList.remove('fade');void V.offsetWidth;V.classList.add('fade');math(V);window.scrollTo(0,0)}
+const VIEWS=[['hoy','Hoy'],['temario','Temario'],['practicar','Practicar'],['tarjetas','Tarjetas'],['simulacro','Simulacro'],['calculadora','Calculadora'],['hojas','Hojas']];
+const nav=document.getElementById('nav');
+nav.innerHTML=VIEWS.map(v=>`<button data-v="${v[0]}">${v[1]}</button>`).join('');
+nav.onclick=e=>{const b=e.target.closest('button');if(b)go(b.dataset.v)};
+let cur='hoy';
+function go(v,arg){cur=v;[...nav.children].forEach(b=>b.dataset.v===v?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current'));try{history.replaceState(null,'','#'+v)}catch(e){}({hoy:vHoy,temario:vTemario,practicar:vPracticar,tarjetas:vTarjetas,simulacro:vSimulacro,calculadora:vCalc,hojas:vHojas})[v](arg)}
+function route(){go(cur)}
+/* ---------- ejercicio ---------- */
+function answerHTML(a,pfx=''){if(a.type==='num')return`<div class="row"><label class="small" for="${pfx}n">Resultado</label><input class="field" id="${pfx}n" inputmode="text" autocomplete="off" placeholder="-3/2"></div>`;
+  if(a.type==='vec')return`<div class="row">( ${a.value.map((_,i)=>`<input class="field" style="width:70px" id="${pfx}v${i}" aria-label="Componente ${i+1}" autocomplete="off">`).join(' , ')} )</div>`;
+  if(a.type==='mat')return`<div class="mgrid" style="grid-template-columns:repeat(${a.value[0].length},auto)">${a.value.flatMap((r,i)=>r.map((_,j)=>`<input class="field" id="${pfx}m${i}_${j}" aria-label="Fila ${i+1}, columna ${j+1}" autocomplete="off">`)).join('')}</div>`;
+  return`<div style="display:flex;flex-direction:column;gap:7px">${a.options.map((o,i)=>`<button type="button" class="opt" id="${pfx}o${i}" data-opt="${i}" aria-pressed="false">${o}</button>`).join('')}</div>`}
+function wireOpts(root,pfx=''){root.querySelectorAll(`[id^="${pfx}o"][data-opt]`).forEach(b=>b.onclick=()=>{root.querySelectorAll(`[id^="${pfx}o"][data-opt]`).forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true')})}
+function check(a,root,pfx=''){const val=id=>{const e=root.querySelector('#'+pfx+id);return e?parseF(e.value):null};
+  if(a.type==='num'){const x=val('n');if(!x)return null;return feq(x,a.value)}
+  if(a.type==='vec'){let ok=true;for(let i=0;i<a.value.length;i++){const x=val('v'+i);if(!x)return null;if(!feq(x,a.value[i]))ok=false}return ok}
+  if(a.type==='mat'){let ok=true;for(let i=0;i<a.value.length;i++)for(let j=0;j<a.value[0].length;j++){const x=val(`m${i}_${j}`);if(!x)return null;if(!feq(x,a.value[i][j]))ok=false}return ok}
+  const s=root.querySelector(`[id^="${pfx}o"][aria-pressed="true"]`);if(!s)return null;return +s.dataset.opt===a.correct}
+const ansTex=a=>a.type==='num'?R`\(${ft(a.value)}\)`:a.type==='vec'?R`\(${texV(a.value)}\)`:a.type==='mat'?R`\(${texM(a.value)}\)`:a.options[a.correct];
+function exercise(el,sk,onDone){const ex=sk.g();let done=false;
+  el.innerHTML=`<div class="row" style="justify-content:space-between"><span class="kicker">Tema ${sk.t} · ${sk.n}</span><span class="badge">${sk.ref}</span></div><div class="q">${ex.q}</div><div id="ans">${answerHTML(ex.a)}</div><div class="small" ${ex.a.type==='choice'?'hidden':''}>Puedes escribir enteros, fracciones (3/4) o decimales exactos.</div><div class="row"><button class="btn pri" id="chk">Comprobar</button><button class="btn" id="hin">Pista</button><button class="btn" id="sol">Ver solución</button><button class="btn" id="nxt" hidden>Siguiente</button></div><div id="fb" aria-live="polite"></div><div id="st"></div>`;
+  wireOpts(el);math(el);const fb=el.querySelector('#fb'),st=el.querySelector('#st');
+  const put=(c,h)=>{fb.innerHTML=`<div class="fb ${c}">${h}</div>`;math(fb)};
+  const reveal=()=>{st.innerHTML=`<div class="kicker" style="margin-bottom:8px">Solución paso a paso</div><ol class="steps">${ex.steps.map(s=>`<li>${s}</li>`).join('')}</ol>`;math(st);el.querySelector('#nxt').hidden=false;el.querySelector('#chk').hidden=true;el.querySelector('#hin').hidden=true;el.querySelector('#sol').hidden=true};
+  el.querySelector('#hin').onclick=()=>put('note',ex.hint);
+  el.querySelector('#sol').onclick=()=>{if(!done){done=true;record(sk.id,false)}put('bad','Respuesta correcta: '+ansTex(ex.a));reveal();onDone&&onDone(false)};
+  el.querySelector('#chk').onclick=()=>{const r=check(ex.a,el);if(r===null){put('note','Completa todas las casillas. Usa números como 2, -1/3 o 0.5.');return}
+    if(r){if(!done){done=true;record(sk.id,true)}put('ok','Correcto.');reveal();onDone&&onDone(true)}else{if(!done){done=true;record(sk.id,false)}put('bad','Todavía no. Revísalo o pide la solución. Este intento ya cuenta como fallo.')}};
+  el.querySelector('#nxt').onclick=()=>onDone&&onDone('next')}
+/* ---------- Hoy ---------- */
+function vHoy(){const due=dueCards().length;const week=Object.entries(S.days).filter(([d])=>d>=dayAdd(-6)).reduce((a,[,n])=>a+n,0);const dl=S.examDate?Math.ceil((new Date(S.examDate)-new Date(today()))/864e5):null;const mean=Math.round(TEMAS.reduce((a,t)=>a+mastery(t),0)/5);const weakT=TEMAS.slice().sort((a,b)=>mastery(a)-mastery(b))[0];
+  show(`<h1>Álgebra: tu sesión de hoy</h1><p class="lead">Practica con ejercicios que se generan y corrigen al momento. La app te propone lo que menos dominas.</p>
+  <div class="grid2"><section class="panel"><span class="kicker">Dominio por tema</span><div>${TEMAS.map(t=>`<button class="tema" data-go="${t}"><b>${t}</b><span>${TN[t]}<div class="bar"><i style="width:${mastery(t)}%"></i></div></span><span class="pct">${mastery(t)}%</span></button>`).join('')}</div><p class="small">Se calcula con tus últimos 5 intentos de cada habilidad y las tarjetas memorizadas.</p></section>
+  <section class="panel"><span class="kicker">Hoy toca</span><div class="row" style="gap:26px"><div><div class="stat">${due}</div><div class="small">tarjetas pendientes</div></div><div><div class="stat">${week}</div><div class="small">ejercicios en 7 días</div></div><div><div class="stat">${streak()}</div><div class="small">días seguidos</div></div></div>
+  <div class="row"><button class="btn pri" id="gocards">Repasar tarjetas</button><button class="btn" id="goweak">Reforzar tema ${weakT}</button></div>
+  <div class="row"><label for="examd" class="small">Fecha del examen</label><input type="date" id="examd" value="${S.examDate}"><span class="small" id="examleft">${dl===null?'Añádela para ver la cuenta atrás.':dl>=0?`Faltan ${dl} días.`:'Fecha ya pasada.'}</span></div><p class="small">Dominio global: ${mean}%.</p></section></div>
+  <section class="panel" id="live"></section>`);
+  V.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go('practicar',{t:+b.dataset.go}));
+  V.querySelector('#gocards').onclick=()=>go('tarjetas');V.querySelector('#goweak').onclick=()=>go('practicar',{t:weakT});
+  V.querySelector('#examd').onchange=e=>{S.examDate=e.target.value;save();vHoy()};
+  const live=V.querySelector('#live');const run=()=>{const sk=weakest();exercise(live,sk,r=>{if(r==='next')run()})};run()}
+/* ---------- Temario ---------- */
+function vTemario(arg){const t=(arg&&arg.t)||1;show(`<h1>Temario</h1><p class="lead">Resumen de la teoría de la asignatura, para repasar antes de practicar. Para el desarrollo completo, usa los apuntes.</p><div class="row">${TEMAS.map(x=>`<button class="chip" aria-pressed="${x===t}" data-t="${x}">${x}. ${TN[x]}</button>`).join('')}</div><section class="panel">${TH[t].map((s,i)=>`<details ${i===0?'open':''}><summary>${s[0]}</summary><div class="body">${s[1]}</div></details>`).join('')}<div class="row"><button class="btn pri" id="prac">Practicar este tema</button></div></section>`);
+  V.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>vTemario({t:+b.dataset.t}));V.querySelector('#prac').onclick=()=>go('practicar',{t})}
+/* ---------- Practicar ---------- */
+function vPracticar(arg){let t=(arg&&arg.t)||1,sel=arg&&arg.sk||null;
+  const paint=()=>{show(`<h1>Practicar</h1><p class="lead">Cada ejercicio es nuevo. Elige una habilidad o deja que la app priorice tus puntos flojos.</p><div class="row">${TEMAS.map(x=>`<button class="chip" aria-pressed="${x===t}" data-t="${x}">Tema ${x}</button>`).join('')}</div><div class="row"><button class="chip" aria-pressed="${!sel}" data-s="">Prioridad automática</button>${SK.filter(s=>s.t===t).map(s=>`<button class="chip" aria-pressed="${sel===s.id}" data-s="${s.id}">${s.n} · ${Math.round(skScore(s.id)*100)}%</button>`).join('')}</div><section class="panel" id="ex"></section>`);
+    V.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{t=+b.dataset.t;sel=null;paint()});V.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{sel=b.dataset.s||null;paint()});
+    const ex=V.querySelector('#ex');const run=()=>{const sk=sel?SK.find(s=>s.id===sel):weakest(t);exercise(ex,sk,r=>{if(r==='next')run()})};run()};paint()}
+/* ---------- Tarjetas ---------- */
+const BOX=[0,1,3,7,16,35];
+function vTarjetas(arg){let t=(arg&&arg.t)||0;let q=shuffle(dueCards(t));let i=0,flip=false;
+  const paint=()=>{const c=q[i];show(`<h1>Tarjetas</h1><p class="lead">Repaso espaciado: lo que aciertas vuelve más tarde y lo que fallas vuelve antes.</p><div class="row"><button class="chip" aria-pressed="${!t}" data-t="0">Todos</button>${TEMAS.map(x=>`<button class="chip" aria-pressed="${x===t}" data-t="${x}">Tema ${x}</button>`).join('')}</div>${c?`<p class="small">Tarjeta ${i+1} de ${q.length} · Tema ${c.t}</p><div class="card"><div>${flip?c.b:'<b>'+c.f+'</b>'}</div></div><div class="row">${flip?`<button class="btn" id="no">No la sabía</button><button class="btn" id="du">Con dudas</button><button class="btn pri" id="si">La sabía</button>`:`<button class="btn pri" id="fl">Ver respuesta</button>`}</div>`:`<section class="panel"><h2>No hay tarjetas pendientes</h2><p>Ya has repasado todo lo programado para hoy en esta selección.</p><div class="row"><button class="btn pri" id="more">Repasar todas igualmente</button></div></section>`}`);
+    V.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>vTarjetas({t:+b.dataset.t}));
+    if(!c){V.querySelector('#more').onclick=()=>{q=shuffle(ALLCARDS.filter(x=>!t||x.t===t));i=0;flip=false;paint()};return}
+    if(!flip)V.querySelector('#fl').onclick=()=>{flip=true;paint()};else{const grade=d=>{const r=S.cards[c.id]||{box:0};r.box=d<0?0:d===0?r.box:Math.min(5,r.box+1);r.due=dayAdd(BOX[r.box]||(d<0?0:1));if(d<0)r.due=today();S.cards[c.id]=r;save();if(d<0&&q.length-i>1)q.push(c);i++;flip=false;if(i>=q.length){q=[];i=0}paint()};V.querySelector('#no').onclick=()=>grade(-1);V.querySelector('#du').onclick=()=>grade(0);V.querySelector('#si').onclick=()=>grade(1)}};paint()}
+/* ---------- Simulacro ---------- */
+let examTimer=null;
+function vSimulacro(){clearInterval(examTimer);const last=S.exams.slice(-5).reverse();
+  show(`<h1>Simulacro</h1><p class="lead">Examen cronometrado con ejercicios nuevos y sin corrección hasta el final. Es un entrenamiento propio: no reproduce el formato oficial del examen.</p><section class="panel"><span class="kicker">Configura el simulacro</span><div class="row">${TEMAS.map(t=>`<label class="row" style="gap:5px"><input type="checkbox" class="tchk" value="${t}" ${t<=5?'checked':''}> Tema ${t}</label>`).join('')}</div><div class="row"><label for="nq">Preguntas</label><select id="nq"><option>6</option><option selected>10</option><option>15</option></select><label for="mins">Minutos</label><select id="mins"><option>30</option><option selected>60</option><option>90</option></select></div><div class="row"><button class="btn pri" id="start">Empezar</button></div></section>${last.length?`<section class="panel"><span class="kicker">Últimos simulacros</span><div class="scroll"><table class="tbl"><tr><th>Fecha</th><th>Nota</th><th>Aciertos</th></tr>${last.map(e=>`<tr><td>${e.date}</td><td>${e.score.toFixed(1)}</td><td>${e.ok} de ${e.n}</td></tr>`).join('')}</table></div></section>`:''}`);
+  V.querySelector('#start').onclick=()=>{const ts=[...V.querySelectorAll('.tchk:checked')].map(x=>+x.value);if(!ts.length)return;const n=+V.querySelector('#nq').value,m=+V.querySelector('#mins').value;const items=[];for(let i=0;i<n;i++){const t=ts[i%ts.length];const pool=SK.filter(s=>s.t===t&&!s.id.endsWith('vf'));const sk=pick(pool);items.push({sk,ex:sk.g()})}runExam(items,m)}}
+function runExam(items,mins){let left=mins*60;show(`<div class="row" style="justify-content:space-between;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding:8px 0;z-index:2"><h1 style="font-size:30px">Simulacro</h1><span class="stat" id="tm" style="font-size:32px">--:--</span></div>${items.map((it,i)=>`<section class="panel" id="p${i}"><span class="kicker">Pregunta ${i+1} · Tema ${it.sk.t}</span><div class="q">${it.ex.q}</div>${answerHTML(it.ex.a,'q'+i+'_')}</section>`).join('')}<div class="row"><button class="btn pri" id="end">Entregar</button></div>`);
+  items.forEach((it,i)=>wireOpts(V.querySelector('#p'+i),'q'+i+'_'));
+  const tm=V.querySelector('#tm');const tick=()=>{tm.textContent=String(Math.floor(left/60)).padStart(2,'0')+':'+String(left%60).padStart(2,'0');if(left--<=0)finish()};
+  function finish(){clearInterval(examTimer);const res=items.map((it,i)=>check(it.ex.a,V.querySelector('#p'+i),'q'+i+'_')===true);res.forEach((ok,i)=>record(items[i].sk.id,ok));const ok=res.filter(Boolean).length;const score=ok/items.length*10;S.exams.push({date:today(),score,ok,n:items.length});save();
+    const by={};items.forEach((it,i)=>{const b=by[it.sk.t]||(by[it.sk.t]={o:0,n:0});b.n++;if(res[i])b.o++});
+    show(`<h1>Resultado: ${score.toFixed(1)}</h1><p class="lead">${ok} de ${items.length} correctas.</p><section class="panel"><span class="kicker">Por tema</span>${Object.entries(by).map(([t,b])=>`<div>Tema ${t}. ${TN[t]}: <b>${b.o} de ${b.n}</b><div class="bar"><i style="width:${b.o/b.n*100}%"></i></div></div>`).join('')}</section>${items.map((it,i)=>`<section class="panel"><div class="row" style="justify-content:space-between"><span class="kicker">Pregunta ${i+1}</span><span class="fb ${res[i]?'ok':'bad'}" style="padding:4px 9px">${res[i]?'Correcta':'Incorrecta'}</span></div><div class="q">${it.ex.q}</div><p><b>Respuesta:</b> ${ansTex(it.ex.a)}</p><ol class="steps">${it.ex.steps.map(s=>`<li>${s}</li>`).join('')}</ol></section>`).join('')}<div class="row"><button class="btn pri" id="again">Otro simulacro</button></div>`);V.querySelector('#again').onclick=vSimulacro}
+  tick();examTimer=setInterval(tick,1000);V.querySelector('#end').onclick=finish}
+/* ---------- Calculadora ---------- */
+let calcText='2 1 1 8\n1 3 2 13\n1 0 2 7';
+function parseMatrix(t){const rows=t.trim().split(/\n+/).map(l=>l.trim().split(/[\s;,]+/).filter(Boolean));if(!rows.length||!rows[0].length)return{err:'Escribe al menos un número.'};const m=rows[0].length;if(rows.some(r=>r.length!==m))return{err:'Todas las filas deben tener el mismo número de elementos.'};const A=[];for(const r of rows){const o=[];for(const x of r){const f=parseF(x);if(!f)return{err:`No entiendo «${x.replace(/[<>&]/g,'')}». Usa enteros, fracciones o decimales.`};o.push(f)}A.push(o)}if(rows.length>6||m>7)return{err:'El tamaño máximo es 6 filas y 7 columnas.'};return{A}}
+function vCalc(){show(`<h1>Calculadora paso a paso</h1><p class="lead">Comprueba tus cuentas con aritmética exacta. Escribe una fila por línea, con los números separados por espacios.</p><section class="panel"><label for="mx" class="kicker">Matriz</label><textarea id="mx" spellcheck="false">${calcText}</textarea><div class="row"><button class="btn" data-op="rank">Rango y Gauss</button><button class="btn" data-op="det">Determinante</button><button class="btn" data-op="inv">Inversa</button><button class="btn" data-op="rf">Sistema (última columna = b)</button><button class="btn" data-op="ker">Núcleo</button><button class="btn pri" data-op="eig">Autovalores</button></div></section><section class="panel" id="out" aria-live="polite"><p class="small">El resultado aparecerá aquí. El ejemplo cargado es un sistema: pulsa «Sistema» para resolverlo.</p></section>`);
+  V.querySelector('#mx').oninput=e=>calcText=e.target.value;
+  V.querySelectorAll('[data-op]').forEach(b=>b.onclick=()=>runCalc(b.dataset.op))}
+function runCalc(op){const out=V.querySelector('#out');const P=parseMatrix(V.querySelector('#mx').value);if(P.err){out.innerHTML=`<div class="fb bad">${P.err}</div>`;return}const A=P.A,n=A.length,m=A[0].length;let h='';const list=l=>`<ol class="steps">${l.map(x=>`<li>${x}</li>`).join('')}</ol>`;const sq=n===m;
+  const need=msg=>{out.innerHTML=`<div class="fb bad">${msg}</div>`};
+  if(op==='rank'){const s=gaussSteps(A);h=`<h2>Rango = ${s.e.rank}</h2>`+list(s.list)}
+  if(op==='det'){if(!sq)return need('El determinante requiere una matriz cuadrada.');const s=gaussSteps(A);const d=det(A);h=R`<h2>\(|A|=${ft(d)}\)</h2>`+list(s.list.concat([s.e.sign<0?'Un número impar de intercambios cambia el signo.':'El determinante es el producto de la diagonal.']))}
+  if(op==='inv'){if(!sq)return need('La inversa requiere una matriz cuadrada.');const I=inv(A);if(!I)return need('La matriz es singular: |A| = 0, luego no tiene inversa.');h=R`<h2>Inversa</h2><div class="q">\(A^{-1}=${texM(I)}\)</div>`}
+  if(op==='rf'){if(m<2)return need('Necesitas al menos una incógnita y la columna b.');const Ac=A.map(r=>r.slice(0,m-1));const ra=rank(Ac),rm=rank(A),p=m-1;const s=gaussSteps(A,p);h=R`<h2>${ra!==rm?'Incompatible':ra===p?'Compatible determinado':'Compatible indeterminado'}</h2><p>\(\mathrm{rg}(A)=${ra}\), \(\mathrm{rg}(M)=${rm}\), ${p} incógnitas.</p>`+list(s.list);if(ra===rm){const r=rref(A,p);const names=p<=4?'xyzt'.slice(0,p).split(''):Array.from({length:p},(_,i)=>`x_{${i+1}}`);const free=names.filter((_,j)=>!r.piv.includes(j));const sol=r.piv.map((c,i)=>{let e=ft(r.M[i][p]);names.forEach((nm,j)=>{if(j===c||r.piv.includes(j))return;const f=fneg(r.M[i][j]);if(fz(f))return;e+=(f.n<0?'-':'+')+(Math.abs(f.n)===f.d?'':ft(fr(Math.abs(f.n),f.d)))+nm});return`${names[c]}=${e}`});h+=R`<p class="q"><b>Solución:</b> \(${sol.join(R`,\quad `)}\)${free.length?R`, con \(${free.join(',')}\in\mathbb R\)`:''}.</p>`}}
+  if(op==='ker'){const N=nullspace(A);h=R`<h2>\(\dim\mathrm{Ker}=${N.length}\)</h2><p class="q">${N.length?R`Base: \(\{${N.map(texV).join(',\\ ')}\}\)`:R`Núcleo trivial: \(\{\vec 0\}\). La aplicación es inyectiva.`}</p><p>\(\mathrm{rg}=${m-N.length}\), y \(${m}=${N.length}+${m-N.length}\).</p>`}
+  if(op==='eig'){if(!sq)return need('Los autovalores requieren una matriz cuadrada.');const c0=charpoly(A.map(r=>r.map(x=>x))).map(x=>x);const sign=n%2?-1:1;const shown=c0.map(x=>fm(x,fr(sign)));const{roots,rest}=ratRoots(c0);const uniq=[];roots.forEach(x=>{const u=uniq.find(y=>feq(y.v,x));if(u)u.m++;else uniq.push({v:x,m:1})});
+    const rows=uniq.map(u=>{const B=A.map((r,i)=>r.map((x,j)=>i===j?fs(x,u.v):x));const g=n-rank(B);const N=nullspace(B);return{...u,g,N}});const complete=roots.length===n;const diag=complete&&rows.every(r=>r.g===r.m);
+    h=R`<p class="q">\(P(\lambda)=${polyTex(shown)}\)</p>`+(rows.length?`<div class="scroll"><table class="tbl"><tr><th>λ</th><th>mₐ</th><th>m_g</th><th>Base de autovectores</th></tr>${rows.map(r=>R`<tr><td>\(${ft(r.v)}\)</td><td>${r.m}</td><td>${r.g}</td><td>\(${r.N.map(texV).join(',\\ ')}\)</td></tr>`).join('')}</table></div>`:'')+(complete?`<div class="fb ${diag?'ok':'bad'}">${diag?'Diagonalizable en ℝ.':'No diagonalizable: alguna m_g es menor que mₐ.'}</div>`:`<div class="fb note">Quedan raíces no racionales${rest.length===3&&rest[1]*rest[1]-4*rest[0]*rest[2]<0?', y son complejas: no es diagonalizable en ℝ':''}. La calculadora solo halla raíces racionales exactas.</div>`)}
+  out.innerHTML=h;math(out)}
+/* ---------- Hojas ---------- */
+function vHojas(arg){const t=(arg&&arg.t)||1;const e=ERR.filter(x=>x.t===t);show(`<h1>Hojas de ejercicios</h1><p class="lead">Guía para trabajar tus PDF: método y resultado por ejercicio, sin repetir los enunciados. Ten la hoja al lado y usa «Practicar» para hacer uno parecido.</p><div class="row">${TEMAS.map(x=>`<button class="chip" aria-pressed="${x===t}" data-t="${x}">Tema ${x}</button>`).join('')}</div>${e.length?`<section class="panel"><span class="kicker">Revisar con la profesora: tema ${t}</span>${e.map(x=>`<div class="trap"><div class="row"><b>Ejercicio ${x.e}</b><span class="badge">${x.k}</span></div><p class="small">La hoja dice: ${x.of}</p><p>${x.ok}</p></div>`).join('')}</section>`:''}<section class="panel"><span class="kicker">Tema ${t}. ${TN[t]}</span><div class="scroll"><table class="tbl"><tr><th>Ej.</th><th>Tipo</th><th>Cómo abordarlo</th><th>Resultado</th><th></th></tr>${GUIDE[t].map(g=>`<tr><td>${g[0]}</td><td>${g[1]}</td><td>${g[2]}</td><td>${g[3]}</td><td><button class="btn" style="padding:6px 8px;font-size:14px" data-sk="${g[4]}">Practicar</button></td></tr>`).join('')}</table></div></section>`);
+  V.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>vHojas({t:+b.dataset.t}));V.querySelectorAll('[data-sk]').forEach(b=>b.onclick=()=>go('practicar',{t,sk:b.dataset.sk}))}
+/* ---------- arranque ---------- */
+window.__alg={SK,det,rank,inv,fr,feq,mmul,ft,fp,charpoly,ratRoots,toF,GUIDE,ERR,solve,nullspace};
+const h0=(location.hash||'').slice(1);go(VIEWS.some(v=>v[0]===h0)?h0:'hoy');
+</script>
+
+</body></html>

@@ -25,13 +25,14 @@ const TN={1:'Sistema diédrico: punto y recta',2:'Sistema diédrico: el plano',3
 const TIPOS_REC=['Horizontal','Frontal','De perfil','Oblicua','Perpendicular al PV (de punta)','Perpendicular al PH (vertical)','Paralela a la LT'];
 const TIPOS_PLA=['Horizontal','Frontal','De perfil','Perpendicular al PH (proyectante horizontal)','Perpendicular al PV (proyectante vertical)','Oblicuo','Paralelo a la LT'];
 
+/* ---------- ver al final: LÁMINAS (prisma recto con taludes y túnel medio cilindro) ---------- */
 /* ---------- figuras SVG (se dibujan con los mismos datos del ejercicio) ---------- */
 const f1=x=>(+x).toFixed(1);
 const SL=(x1,y1,x2,y2,st)=>`<line x1="${f1(x1)}" y1="${f1(y1)}" x2="${f1(x2)}" y2="${f1(y2)}" ${st||'stroke="currentColor" stroke-width="1.2"'}/>`;
 const ST=(x,y,t,o)=>`<text x="${f1(x)}" y="${f1(y)}" ${o||''}>${t}</text>`;
 const SC=(x,y,r,col)=>`<circle cx="${f1(x)}" cy="${f1(y)}" r="${r}" fill="${col||'currentColor'}"/>`;
 const AMB='stroke="var(--amber)" stroke-width="2"';
-const wrapSvg=(W,H,body,cap)=>{const fs=Math.max(8,Math.max(W,H)/24);return`<svg viewBox="0 0 ${f1(W)} ${f1(H)}" width="${Math.round(Math.min(380,Math.max(240,W*1.3)))}" role="img"><g fill="currentColor" stroke="none" font-family="sans-serif" font-size="${f1(fs)}">${body.t||''}</g>${body.g||''}</svg>${cap?`<p>${cap}</p>`:''}`};
+const wrapSvg=(W,H,body,cap)=>{const fs=Math.max(8,Math.max(W,H)/24);return`<svg viewBox="0 0 ${f1(W)} ${f1(H)}" width="${Math.round(Math.min(480,Math.max(300,W*1.6)))}" role="img"><g fill="currentColor" stroke="none" font-family="sans-serif" font-size="${f1(fs)}">${body.t||''}</g>${body.g||''}</svg>${cap?`<p>${cap}</p>`:''}`};
 const FG=s=>`<div class="fig">${s}</div>`;
 /* proyecciones diédricas: alzado encima de la LT y planta debajo */
 function dFig({pts,lines=[],polys=[]}){
@@ -40,10 +41,10 @@ function dFig({pts,lines=[],polys=[]}){
  const zm=Math.max(60,...P.map(p=>p[2]==null?0:p[2]))+20,ym=Math.max(60,...P.map(p=>p[1]))+20;
  const W=x1-x0,LT=zm,H=zm+ym,X=x=>x-x0,Z=z=>LT-z,Y=y=>LT+y,fs=Math.max(8,W/24);let g='',t='';
  g+=SL(0,LT,W,LT,'stroke="currentColor" stroke-width="1.8"');
- nm.forEach(n=>{const p=pts[n];g+=SL(X(p[0]),p[2]==null?6:Z(p[2]),X(p[0]),Y(p[1]),'stroke="currentColor" stroke-width=".6" stroke-dasharray="2 2" opacity=".55"')});
+ nm.filter(n=>n[0]!=='_').forEach(n=>{const p=pts[n];g+=SL(X(p[0]),p[2]==null?6:Z(p[2]),X(p[0]),Y(p[1]),'stroke="currentColor" stroke-width=".6" stroke-dasharray="2 2" opacity=".55"')});
  polys.forEach(pl=>{const f=v=>pl.map(n=>`${f1(X(pts[n][0]))},${f1(v(pts[n]))}`).join(' ');g+=`<polygon points="${f(p=>Z(p[2]))}" fill="currentColor" fill-opacity=".09" stroke="currentColor" stroke-width="1.1"/><polygon points="${f(p=>Y(p[1]))}" fill="currentColor" fill-opacity=".09" stroke="currentColor" stroke-width="1.1"/>`;});
  lines.forEach(([a,b,lab])=>{const A=pts[a],B=pts[b];g+=SL(X(A[0]),Z(A[2]),X(B[0]),Z(B[2]),AMB)+SL(X(A[0]),Y(A[1]),X(B[0]),Y(B[1]),AMB);if(lab){t+=ST((X(A[0])+X(B[0]))/2+3,(Z(A[2])+Z(B[2]))/2-4,lab+'″')+ST((X(A[0])+X(B[0]))/2+3,(Y(A[1])+Y(B[1]))/2-4,lab+'′')}});
- nm.forEach(n=>{const p=pts[n];if(p[2]!=null){g+=SC(X(p[0]),Z(p[2]),2.2);t+=ST(X(p[0])+3,Z(p[2])-3,n+'″')}else{t+=ST(X(p[0])+3,fs+2,n+'″ = ?')}g+=SC(X(p[0]),Y(p[1]),2.2);t+=ST(X(p[0])+3,Y(p[1])+fs,n+'′')});
+ nm.filter(n=>n[0]!=='_').forEach(n=>{const p=pts[n];if(p[2]!=null){g+=SC(X(p[0]),Z(p[2]),2.2);t+=ST(X(p[0])+3,Z(p[2])-3,n+'″')}else{t+=ST(X(p[0])+3,fs+2,n+'″ = ?')}g+=SC(X(p[0]),Y(p[1]),2.2);t+=ST(X(p[0])+3,Y(p[1])+fs,n+'′')});
  t+=ST(W-fs*1.6,LT-3,'LT')+ST(3,fs,'PV (alzado)')+ST(3,H-3,'PH (planta)');
  return wrapSvg(W,H,{t,g},'Proyecciones diédricas (1:1 en mm). El alzado está sobre la LT y la planta debajo.')}
 /* cambio de plano: la nueva LT₁ es paralela a A′B′ y la VM aparece en A″₁B″₁ */
@@ -314,5 +315,113 @@ const HOJA={
 5:[{t:'Camino de pendiente constante y cota por interpolación',q:R`Plano \(1:2000\) con curvas cada 5 m. a) Abertura de compás para un camino del 8 %. b) Dos curvas de cota 120 y 125 están a 18 mm; un punto P a 6 mm de la de 120. Cota de P.`,steps:[R`Distancia real entre curvas: \(5/0{,}08=62{,}5\) m. En el plano: \(62{,}5\cdot1000/2000=31{,}25\) mm.`,R`Interpolación: \(z=120+5\cdot6/18=121{,}67\) m.`],res:R`Compás: \(31{,}25\) mm. Cota de P: \(121{,}67\) m`}]
 };
 
-return{id:'dibujo',name:'Expresión Gráfica',sub:'Expresión Gráfica I · Ingeniería Civil',TN,skills,VF,CARDS,TH,EJ,HOJA};
+/* =====================  LÁMINAS RESUELTAS PASO A PASO  ===================== */
+const d2r=a=>a*Math.PI/180,r2d=a=>a*180/Math.PI,unit=v=>sc(1/nrm(v),v),fx=(x,d=2)=>String(+(+x).toFixed(d)).replace('.',',');
+/* 3D (X este, Y norte, Z arriba) -> coordenadas diédricas (abscisa, alejamiento, cota); el norte queda arriba en la planta */
+function mapD(P){const ks=Object.keys(P),xs=ks.map(k=>P[k][0]),ys=ks.map(k=>P[k][1]),zs=ks.map(k=>P[k][2]);const x0=Math.min(...xs),y1=Math.max(...ys),z0=Math.min(...zs),o={};ks.forEach(k=>o[k]=[+(P[k][0]-x0+20).toFixed(1),+(y1-P[k][1]+12).toFixed(1),+(P[k][2]-z0+12).toFixed(1)]);return o}
+const view3=(ALL,names,lines,polys)=>{const sel={};names.forEach(n=>{sel[n]=ALL[n]});return dFig({pts:mapD(sel),lines:lines||[],polys:polys||[]})};
+/* figura 2D con ajuste automático: items = {a,b,c}=segmento, {pp,c}=polilínea, {p,l,c}=punto, {at,tx}=texto */
+function fig2(items,cap){const pts=[];items.forEach(it=>{if(it.a){pts.push(it.a,it.b)}if(it.pp)it.pp.forEach(q=>pts.push(q));if(it.p)pts.push(it.p);if(it.at)pts.push(it.at)});
+ const xs=pts.map(q=>q[0]),zs=pts.map(q=>q[1]),x0=Math.min(...xs),x1=Math.max(...xs),z0=Math.min(...zs),z1=Math.max(...zs),M=28,s=Math.min(300/((x1-x0)||1),210/((z1-z0)||1)),W=(x1-x0)*s+2*M+30,H=(z1-z0)*s+2*M,X=u=>M+(u-x0)*s,Y=z=>M+(z1-z)*s;let g='',t='';
+ items.forEach(it=>{const col=it.c==='a'?AMB:it.c==='d'?'stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" opacity=".7"':'stroke="currentColor" stroke-width="1.6"';
+  if(it.a)g+=SL(X(it.a[0]),Y(it.a[1]),X(it.b[0]),Y(it.b[1]),col);
+  if(it.pp)g+=`<polyline points="${it.pp.map(q=>f1(X(q[0]))+','+f1(Y(q[1]))).join(' ')}" fill="none" ${col}/>`;
+  if(it.p){g+=SC(X(it.p[0]),Y(it.p[1]),2.5,it.c==='a'?'var(--amber)':null);if(it.l)t+=ST(X(it.p[0])+4,Y(it.p[1])-4,it.l)}
+  if(it.tx)t+=ST(X(it.at[0]),Y(it.at[1]),it.tx,it.w?'font-weight="700"':'')});
+ return wrapSvg(W,H,{t,g},cap)}
+const arcPts=(c,r,a0,a1,n)=>Array.from({length:n+1},(_,i)=>{const a=d2r(a0+(a1-a0)*i/n);return[c[0]+r*Math.cos(a),c[1]+r*Math.sin(a)]});
+const P=(id)=>id;
+
+/* ---------- Lámina 4: prisma recto cortado por dos taludes ---------- */
+function lam4(p){
+ const al=d2r(+p.az),ga=d2r(+p.pend),N=+p.lados,a=+p.lado,d1=+p.d1,d2=+p.d2,s1=+p.s1,s2=+p.s2;
+ const e=[Math.cos(ga)*Math.sin(al),Math.cos(ga)*Math.cos(al),Math.sin(ga)],h=[Math.cos(al),-Math.sin(al),0],m=cross(h,e),f=unit(cross(e,[0,1,0]));
+ const Rr=N===4?a/Math.SQRT2:a,a0=N===4?45:0,nm=['P','Q','R','S','T','U'].slice(0,N);
+ const V=nm.map((_,k)=>{const th=d2r(a0+360/N*k);return add(sc(Rr*Math.cos(th),h),sc(Rr*Math.sin(th),m))});
+ const pl=(d,del,sg)=>({P0:sc(d,e),n:[-Math.tan(d2r(sg))*Math.sin(del),-Math.tan(d2r(sg))*Math.cos(del),1],del,sg:d2r(sg)});
+ const q1=pl(d1,al,s1),q2=pl(d2,al+Math.PI,s2);
+ if(Math.abs(dot(q1.n,e))<.05||Math.abs(dot(q2.n,e))<.05)return{err:'Alguna arista es casi paralela a un talud: cambia las pendientes de los taludes.'};
+ const tOf=(v,q)=>dot(q.n,sub(q.P0,v))/dot(q.n,e),t1=V.map(v=>tOf(v,q1)),t2=V.map(v=>tOf(v,q2));
+ const pA=V.map((v,i)=>add(v,sc(t1[i],e))),pB=V.map((v,i)=>add(v,sc(t2[i],e)));
+ const corners=(q,names)=>{const s=[Math.cos(q.del),-Math.sin(q.del),0],dd=[Math.sin(q.del)*Math.cos(q.sg),Math.cos(q.del)*Math.cos(q.sg),Math.sin(q.sg)],W=Rr*2.4,Hh=Rr*2.4,o={};[[-1,-1],[1,-1],[1,1],[-1,1]].forEach(([i,j],k)=>{o[names[k]]=add(add(q.P0,sc(i*W,s)),sc(j*Hh,dd))});return o};
+ const ALL={O:[0,0,0],E:sc(Math.max(d1,10)*.9,e),_h1:sc(Rr*1.3,h),_h2:sc(-Rr*1.3,h),_f1:sc(Rr*1.3,f),_f2:sc(-Rr*1.3,f),...corners(q1,['A','B','C','D']),...corners(q2,['E','F','G','H'])};
+ nm.forEach((n,i)=>{ALL[n]=V[i];ALL['_x'+n]=add(V[i],sc(Math.max(...t1)+12,e));ALL['_y'+n]=add(V[i],sc(Math.min(...t2)-12,e));ALL[String(i+1)]=pA[i];ALL[String(N+i+1)]=pB[i]});
+ const n1=nm.map((_,i)=>String(i+1)),n2=nm.map((_,i)=>String(N+i+1));
+ const ang=(txt)=>txt;
+ const lens=nm.map((n,i)=>({n,i,a:Math.abs(t1[i]),b:Math.abs(t2[i])}));const big=lens.reduce((x,y)=>y.a>x.a?y:x);
+ const Lh=Math.hypot(...[pA[big.i][0]-V[big.i][0],pA[big.i][1]-V[big.i][1]]);
+ const secPoly=[...V.map((v,i)=>[v[0],v[1]])];
+ const vmSec=fig2([{pp:[...V.map((_,i)=>{const th=d2r(a0+360/N*i);return[Rr*Math.cos(th),Rr*Math.sin(th)]}),(()=>{const th=d2r(a0);return[Rr*Math.cos(th),Rr*Math.sin(th)]})()],c:'a'},{a:[-Rr*1.5,0],b:[Rr*1.5,0],c:'d'},{p:[0,0],l:'O′₁ ≡ e′₁'},{at:[Rr*1.05,-Rr*0.2],tx:'h′₁ (lados ∥ h)',w:1},...nm.map((n,i)=>{const th=d2r(a0+360/N*i);return{p:[Rr*Math.cos(th),Rr*Math.sin(th)],l:n+'′₁'}})],`Sección recta en verdadera magnitud (PH₁): lado ${a} mm, con dos lados paralelos a h′₁ (horizontales).`);
+ const desarrollo=(()=>{const it=[];const X=k=>k*a;it.push({pp:Array.from({length:N+1},(_,k)=>[X(k),0]),c:'d'});
+  for(let k=0;k<=N;k++){const i=k%N;it.push({a:[X(k),t2[i]],b:[X(k),t1[i]],c:'d'});it.push({p:[X(k),t1[i]],l:String(i+1)});it.push({p:[X(k),t2[i]],l:String(N+i+1)})}
+  it.push({pp:Array.from({length:N+1},(_,k)=>[X(k),t1[k%N]]),c:'a'});it.push({pp:Array.from({length:N+1},(_,k)=>[X(k),t2[k%N]]),c:'a'});
+  it.push({at:[0,-6],tx:'sección recta abierta: '+nm.join(' ')+' '+nm[0]+'  (lados de '+a+' mm)'});return fig2(it,'Desarrollo: la sección recta se abre sobre una recta y por cada vértice se llevan, perpendiculares, las aristas hasta cada talud (en VM).')})();
+ const enun=R`<p>Dibuja un prisma recto de sección ${N===4?'cuadrada':'hexagonal regular'} de lado \(${a}\) mm cuyo eje \(e\) pasa por \(O\), con una dirección de \(${p.az}^\circ\) respecto al Norte y una pendiente de \(${p.pend}^\circ\). Dos lados de la sección son horizontales.</p><p>El prisma está limitado por dos taludes planos: el plano \(ABCD\), de pendiente \(${s1}^\circ\), a \(${d1}\) mm de \(O\) medidos sobre el eje, y el plano \(EFGH\), de pendiente \(${s2}^\circ\), a \(${Math.abs(d2)}\) mm de \(O\) en sentido contrario.</p><ol class="steps"><li>Proyecciones del prisma entre los dos taludes.</li><li>Secciones planas que producen los dos taludes.</li><li>Verdadera magnitud de las aristas y desarrollo del prisma.</li></ol><div class="trap">Enunciado reconstruido a partir de los pasos de la lámina. No es el literal del profesor, pero el método es el mismo.</div>`;
+ const steps=[
+ {t:'Dibujar el eje del prisma',html:R`<p>Con la dirección \(${p.az}^\circ\) dibujas \(e'\) en la planta, medida desde el Norte. Con la pendiente \(${p.pend}^\circ\) dibujas \(e''\) en el alzado usando un triángulo de cotas: por cada \(100\) mm en planta, el eje sube \(100\tan${p.pend}^\circ=${fx(100*Math.tan(ga),1)}\) mm. (También puede hacerse con un cambio de plano vertical.)</p>`,fig:view3(ALL,['O','E'],[['O','E','e']])},
+ {t:'Plano perpendicular al eje, con su h y su f',html:R`<p>La sección recta de un prisma recto está en un plano perpendicular al eje. Por \(O\) trazas ese plano definiendo su horizontal \(h\) y su frontal \(f\): \(h'\perp e'\) y \(f''\perp e''\). Aunque podrías poner el eje de punta sin dibujarlo, \(h\) te servirá para saber qué lados de la sección son horizontales.</p>`,fig:view3(ALL,['O','E','_h1','_h2','_f1','_f2'],[['O','E','e'],['_h1','_h2','h'],['_f1','_f2','f']])},
+ {t:'Eje en verdadera magnitud (1.er cambio de plano)',html:R`<p>Cambio de plano vertical PV₁ con la nueva línea de tierra paralela a \(e'\). En esa vista el eje se ve en VM y el plano \(hf\) queda proyectante, perpendicular a \(e\).</p><p>Con estos datos el eje mide \(${fx(nrm(ALL.E))}\) mm entre \(O\) y \(E\).</p>`,fig:(()=>{const D=mapD({O:ALL.O,E:ALL.E});return cambioFig(D.O,D.E,'α = '+p.pend+'° (pendiente)')})()},
+ {t:'Sección en verdadera magnitud y eje de punta (2.º cambio de plano)',html:R`<p>Nuevo cambio de plano horizontal PH₁ con la LT₁ perpendicular a \(e''_1\). El eje se ve de punta y el plano \(hf\) en VM. Aquí dibujas la sección recta: ${N===4?'un cuadrado':'un hexágono regular'} de lado \(${a}\) mm centrado en \(O\), con dos lados <b>paralelos a \(h'_1\)</b> (porque el enunciado los pide horizontales).</p>${N===4?'<div class="trap">La lámina original usa un hexágono; el método es idéntico con cualquier polígono.</div>':''}`,fig:vmSec},
+ {t:'Proyectar la sección en la planta y el alzado',html:R`<p>Los vértices \(${nm.join(',')}\) se llevan a las vistas iniciales con las distancias de PH₁ y PV₁. Se dibuja con trazo discontinuo porque es solo la sección recta: todavía no se sabe qué lados quedarán ocultos.</p>`,fig:view3(ALL,['O','E',...nm],[['O','E','e']],[nm])},
+ {t:'Trazar las aristas paralelas al eje',html:R`<p>Por cada vértice se traza una recta paralela a \(e\) en planta y alzado: son las aristas ${nm.map(n=>n.toLowerCase()).join(', ')}. Aún no son definitivas hasta cortarlas con los taludes.</p>`,fig:view3(ALL,['O','E',...nm,...nm.map(n=>'_x'+n),...nm.map(n=>'_y'+n)],[['O','E','e'],...nm.map(n=>['_x'+n,'_y'+n,n.toLowerCase()])],[nm])},
+ {t:'Intersección de cada arista con los dos taludes',html:R`<p>Hay dos métodos (el general y el del plano proyectante); cualquiera vale. Con el método general haces pasar por cada arista un plano proyectante horizontal, hallas su recta de intersección con el talud en el alzado y donde corta a la arista está el punto.</p><p>Para el plano \(ABCD\) salen los puntos \(1\ldots${N}\) y para el \(EFGH\), los puntos \(${N+1}\ldots${2*N}\).</p>`,fig:view3(ALL,['A','B','C','D','E','F','G','H',...n1,...n2],[],[['A','B','C','D'],['E','F','G','H']])},
+ {t:'Dibujar el prisma cortado por los taludes',html:R`<p>Los puntos \(1\ldots${N}\) definen la sección plana que genera \(ABCD\) y los puntos \(${N+1}\ldots${2*N}\) la que genera \(EFGH\). Se unen con las aristas y se decide la visibilidad: en la planta se ve lo de mayor cota y en el alzado lo de mayor alejamiento.</p>`,fig:view3(ALL,[...n1,...n2],n1.map((n,i)=>[n,n2[i],nm[i].toLowerCase()]),[n1,n2])},
+ {t:'Verdadera magnitud de las aristas',html:R`<p>Para el desarrollo necesitas la longitud real de cada arista entre los taludes. Se halla con un cambio de plano PV₁ (donde el eje está en VM) o con triángulos de cotas: la hipotenusa es la VM.</p><ul>${lens.map(l=>`<li>\\(${l.i+1}${l.n}=${fx(l.a)}\\) mm y \\(${N+l.i+1}${l.n}=${fx(l.b)}\\) mm</li>`).join('')}</ul><p>Por ejemplo, para el punto \(${nm[big.i]}\): planta \(${fx(Lh)}\) mm y diferencia de cotas \(${fx(Math.abs(pA[big.i][2]-V[big.i][2]))}\) mm dan \(\sqrt{${fx(Lh)}^{2}+${fx(Math.abs(pA[big.i][2]-V[big.i][2]))}^{2}}=${fx(big.a)}\) mm.</p>`,fig:triFig(Lh,Math.abs(pA[big.i][2]-V[big.i][2]),big.a,'α = '+p.pend+'°')},
+ {t:'Construir el desarrollo',html:R`<p>Abres la sección recta (el perímetro \(${nm.join('')}${nm[0]}\), con lados de \(${a}\) mm) sobre una recta. Por cada punto levantas, perpendicularmente, los segmentos de las aristas con las longitudes anteriores, hacia arriba hasta el talud \(ABCD\) y hacia abajo hasta el \(EFGH\). Unes los extremos con rectas (los lados del desarrollo son rectos).</p>`,fig:desarrollo}
+ ];
+ const res=R`<p>Longitudes de las aristas hasta \(ABCD\): ${lens.map(l=>fx(l.a)).join(', ')} mm. Hasta \(EFGH\): ${lens.map(l=>fx(l.b)).join(', ')} mm. Perímetro de la sección: \(${fx(N*a)}\) mm.</p>`;
+ return{enun,steps,res}}
+
+/* ---------- Lámina 5: túnel medio cilindro que corta una vertiente ---------- */
+function lam5(p){
+ const Rr=+p.R,ga=d2r(+p.ga),be=d2r(+p.be),Dp=+p.Dp;
+ if(be<=ga+.02)return{err:'La pendiente de la vertiente debe ser mayor que la del túnel.'};
+ const tb=Math.tan(be),tg=Math.tan(ga),dl=be-ga,Lax=Dp*tb/(Math.cos(ga)*(tb-tg)),phi=[0,45,90,135,180],s=phi.map(a=>Rr*Math.sin(d2r(a))),w=phi.map(a=>Rr*Math.cos(d2r(a))),Li=s.map(x=>Lax+x/Math.tan(dl));
+ const e=[0,Math.cos(ga),Math.sin(ga)],mv=[0,-Math.sin(ga),Math.cos(ga)],lm=[0,Math.cos(be),Math.sin(be)],P0=[0,Dp,0];
+ const S1=phi.map((_,i)=>add([w[i],0,0],sc(s[i],mv))),S2=S1.map((q,i)=>add(q,sc(Li[i],e))),vv=S2.map(q=>dot(sub(q,P0),lm));
+ const ALL={T:[0,0,0],I:sc(Lax,e)};const kmax=Math.max(...vv)+15;
+ [['A',-1,-8],['B',1,-8],['C',1,kmax],['D',-1,kmax]].forEach(([n,i,k])=>{ALL[n]=[i*Rr*1.7,Dp+k*Math.cos(be),k*Math.sin(be)]});
+ phi.forEach((_,i)=>{ALL[String(i+1)]=S1[i];ALL[String(i+6)]=S2[i]});
+ const n1=['1','2','3','4','5'],n2=['6','7','8','9','10'];
+ /* vista PV1: plano vertical perpendicular a AB (u horizontal en la dirección del eje, z cota) */
+ const eU=[Math.cos(ga),Math.sin(ga)],mU=[-Math.sin(ga),Math.cos(ga)],U=(q)=>[q[1],q[2]];
+ const planeLine=[[Dp-8/tb*1+0,-8],[Dp+(vv[2]+10)*Math.cos(be),(vv[2]+10)*Math.sin(be)]];
+ const pvBase=[{a:[Dp-6,-6*tb],b:[Dp+Lax*0.9,(Lax*0.9)*tb],c:'a'},{a:[-6,0],b:[Dp+Lax*.9,0],c:'d'},{p:[0,0],l:'T″₁'},{at:[Dp+Lax*.55,(Lax*.55)*tb-4],tx:'vertiente '+p.be+'°',w:1},{p:[Dp,0],l:'pie de la vertiente'}];
+ const iU=[Lax*Math.cos(ga),Lax*Math.sin(ga)];
+ const fig1=fig2(pvBase,'PV₁: vista de perfil, perpendicular a AB. La vertiente se ve como una recta de pendiente '+p.be+'°.');
+ const fig2_=fig2([...pvBase,{a:[0,0],b:[iU[0]*1.12,iU[1]*1.12],c:'a'},{p:iU,l:'I″₁',c:'a'},{at:[iU[0]*.4,iU[1]*.4+5],tx:'eje '+p.ga+'°',w:1}],'El eje parte de T con '+p.ga+'° ascendentes hacia la vertiente y la corta en I (a '+fx(Lax)+' mm de T).');
+ const semi=[...arcPts([0,0],Rr,0,180,24)];
+ const fig3=fig2([{pp:semi,c:'a'},{a:[-Rr,0],b:[Rr,0],c:'d'},...phi.map((a,i)=>({p:[Rr*Math.cos(d2r(a)),Rr*Math.sin(d2r(a))],l:String(i+1)+"′₁"})),{p:[0,0],l:'e′₁ (eje de punta)'}],'PH₁: el eje se ve de punta y la sección recta (media circunferencia de radio '+Rr+') en VM, dividida en 4 partes iguales (5 puntos).');
+ const fig4=view3(ALL,['T','I',...n1],[['T','I','e']],[n1]);
+ const gens=[0,1,2].map(i=>({a:[S1[i][1]*0,0]}));
+ const pv5=[...pvBase.slice(0,3),{a:[0,0],b:[iU[0]*1.12,iU[1]*1.12],c:'a'},{p:iU,l:'I″₁'},
+  ...[0,1,2].map(i=>({a:U(S1[i]),b:U(S2[i]),c:'d'})),...[0,1,2].map(i=>({p:U(S2[i]),l:String(i+6)+(i===0?'≡10':i===1?'≡9':'')})),...[0,1,2].map(i=>({p:U(S1[i]),l:String(i+1)+(i===0?'≡5':i===1?'≡4':'')})),
+  {pp:[U(S1[2]),U(S1[1]),U(S1[0])],c:'a'}];
+ const fig5=fig2(pv5,'PV₁: por 1, 2, 3 (y 4, 5 por simetría) trazas generatrices paralelas al eje. Donde cortan a la vertiente están 6, 7, 8 (9 y 10).');
+ const fig6=view3(ALL,[...n1,...n2],[['1','6'],['5','10'],['3','8']].map(([a,b])=>[a,b]),[n1,n2]);
+ const fig7=view3(ALL,['A','B','C','D',...n1,...n2],[['1','6'],['5','10']],[['A','B','C','D'],n1,n2]);
+ const fig8=fig2([{pp:phi.map((_,i)=>[w[i],vv[i]]),c:'a'},{a:[w[0],vv[0]],b:[w[4],vv[4]],c:'d'},...phi.map((_,i)=>({p:[w[i],vv[i]],l:String(i+6)})),{at:[w[4],vv[2]+4],tx:'v.m. de la sección plana',w:1}],'PH₂: el plano de la vertiente se ve en VM y la sección es una media elipse.');
+ const piR=Math.PI*Rr,xk=k=>k*piR/4;
+ const fig9=(()=>{const it=[{pp:[[0,0],[piR,0]],c:'d'},{pp:phi.map((_,i)=>[xk(i),Li[i]]),c:'a'}];phi.forEach((_,i)=>{it.push({a:[xk(i),0],b:[xk(i),Li[i]],c:'d'});it.push({p:[xk(i),0],l:String(i+1)});it.push({p:[xk(i),Li[i]],l:String(i+6)});it.push({at:[xk(i)+1.5,Li[i]/2],tx:fx(Li[i])})});
+  it.push({pp:[[piR,0],[piR+2*Rr,0],[piR+2*Rr,Li[4]],[piR,Li[4]]],c:'a'});it.push({at:[piR+Rr*.35,Li[4]*.12],tx:'2R = '+fx(2*Rr)});it.push({at:[0,-8],tx:'πR = '+fx(piR)});return fig2(it,'Desarrollo del túnel: la media circunferencia abierta mide πR y se levantan las generatrices con sus longitudes; a la derecha, la sección rectangular 1-5-6-10.')})();
+ const enun=R`<p>Un túnel de sección semicircular (medio cilindro) de radio \(${Rr}\) m tiene su eje con una pendiente de \(${p.ga}^\circ\) ascendente hacia una vertiente plana de pendiente \(${p.be}^\circ\), de la que \(AB\) es una horizontal. El eje parte de \(T\) y el pie de la vertiente está a \(${Dp}\) mm de \(T\).</p><ol class="steps"><li>Proyecciones del túnel hasta la vertiente.</li><li>Sección plana que produce la vertiente en el túnel, en verdadera magnitud.</li><li>Desarrollo del túnel.</li></ol><div class="trap">Enunciado reconstruido a partir de los pasos de la lámina.</div>`;
+ const steps=[
+ {t:'Plano de la vertiente en PV₁',html:R`<p>Se dibuja la vertiente suponiéndola rectangular, con \(AB\) horizontal, y con la pendiente \(${p.be}^\circ\) y la cota dadas en un cambio de plano vertical PV₁ (perpendicular a \(AB\)).</p>`,fig:fig1},
+ {t:'Eje del túnel e intersección con la vertiente',html:R`<p>En PV₁ dibujas el eje con su pendiente. Hay dos soluciones posibles; la única que cumple el enunciado es la de \(${p.ga}^\circ\) <b>ascendentes hacia el plano</b>. Donde el eje corta a la vertiente está \(I\). Se proyecta \(IT\) en planta y alzado.</p><p>Distancia \(TI=${fx(Lax)}\) mm.</p>`,fig:fig2_},
+ {t:'Eje de punta y sección recta (2.º cambio de plano)',html:R`<p>Cambio de plano horizontal PH₁ con la LT₁ perpendicular al eje en PV₁: el eje se ve como un punto. Dibujas la sección recta del túnel (media circunferencia de radio \(${Rr}\)) y la divides en cuatro partes iguales: cinco puntos, 1 a 5.</p>`,fig:fig3},
+ {t:'Proyecciones de la sección recta',html:R`<p>Queda proyectante en PV₁ y paralela a la LT de PH₁. Con los alejamientos y cotas de los puntos 1 a 5 en PH₁ y PV₁ la dibujas en la planta y el alzado.</p>`,fig:fig4},
+ {t:'Medio cilindro y puntos de la sección plana',html:R`<p>En PV₁ trazas las generatrices por 1, 2, 3, 4 y 5, paralelas al eje. Cortan a la vertiente (proyectante) en los puntos 6, 7, 8, 9 y 10, que definen la sección plana. Longitudes: <b>\(1\text{-}6=${fx(Li[0])}\)</b>, <b>\(2\text{-}7=${fx(Li[1])}\)</b>, <b>\(3\text{-}8=${fx(Li[2])}\)</b> mm (y por simetría \(4\text{-}9=${fx(Li[3])}\), \(5\text{-}10=${fx(Li[4])}\)).</p><div class="box">Comprobación: cada generatriz crece \(R\sin\varphi/\tan(\beta-\gamma)\) respecto a la del eje: con \(\beta-\gamma=${fx(r2d(dl),1)}^\circ\), la de la clave es \(${fx(Rr/Math.tan(dl))}\) mm mayor que \(${fx(Lax)}\).</div>`,fig:fig5},
+ {t:'Sección plana en la planta y el alzado',html:R`<p>Las generatrices son paralelas a la línea de tierra de PV₁ porque en esa vista están en VM. Con los puntos 6 a 10 dibujas la sección que genera la vertiente sobre el medio cilindro en planta y alzado.</p>`,fig:fig6},
+ {t:'Dibujar el túnel y su visibilidad',html:R`<p>Traza las <b>líneas de contorno</b> de la superficie, buscando tangentes a las bases (sección recta y sección plana). Evita dibujar todas las generatrices, salvo las que coincidan con el contorno (aquí 1-6 y 5-10). El túnel está abierto: decide la visibilidad de lo que queda por dentro.</p>`,fig:fig7},
+ {t:'Verdadera magnitud de la sección plana',html:R`<p>Cambio de plano horizontal PH₂ paralelo a la vertiente (que es proyectante en PV₁): los puntos 6 a 10 quedan en VM. La curva es media elipse.</p>`,fig:fig8},
+ {t:'Desarrollo del túnel',html:R`<p>Abres la sección recta (el semiperímetro vale \(\pi R=${fx(piR)}\) mm), la divides en los cinco puntos y levantas las generatrices con sus longitudes medidas en PV₁: <b>${Li.map(x=>fx(x)).join('; ')}</b> mm. Unes 6, 7, 8, 9, 10 con una curva y añades la sección rectangular 1-5-6-10 (ancho \(2R=${fx(2*Rr)}\) mm).</p>`,fig:fig9}
+ ];
+ return{enun,steps,res:R`<p>Generatrices: ${Li.map(x=>fx(x)).join(', ')} mm. Semiperímetro \(\pi R=${fx(piR)}\) mm. Distancia \(TI=${fx(Lax)}\) mm.</p>`}}
+
+const LAM=[
+ {id:'l4',nombre:'Lámina 4 · Prisma y taludes',params:[{k:'az',label:'Dirección del eje (° desde el Norte)'},{k:'pend',label:'Pendiente del eje (°)'},{k:'lados',label:'Sección',opts:[[4,'Cuadrado'],[6,'Hexágono']]},{k:'lado',label:'Lado (mm)'},{k:'d1',label:'Talud ABCD a (mm)'},{k:'s1',label:'Pend. ABCD (°)'},{k:'d2',label:'Talud EFGH a (mm)'},{k:'s2',label:'Pend. EFGH (°)'}],def:{az:30,pend:10,lados:4,lado:30,d1:60,s1:60,d2:-50,s2:45},rand:()=>({az:ri(10,80),pend:ri(5,20),lados:pick([4,6]),lado:pick([24,30,36]),d1:ri(5,9)*10,s1:ri(45,70),d2:-ri(4,8)*10,s2:ri(40,60)}),solve:lam4},
+ {id:'l5',nombre:'Lámina 5 · Túnel medio cilindro',params:[{k:'R',label:'Radio (mm)'},{k:'ga',label:'Pendiente del túnel (°)'},{k:'be',label:'Pendiente de la vertiente (°)'},{k:'Dp',label:'Pie de la vertiente a T (mm)'}],def:{R:20,ga:15,be:45,Dp:33.4},rand:()=>({R:pick([15,20,25]),ga:ri(8,20),be:ri(40,65),Dp:ri(25,60)}),solve:lam5}
+];
+
+return{id:'dibujo',name:'Expresión Gráfica',sub:'Expresión Gráfica I · Ingeniería Civil',TN,skills,VF,CARDS,TH,EJ,HOJA,LAM};
 });

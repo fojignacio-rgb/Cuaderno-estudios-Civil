@@ -384,7 +384,7 @@ function buildSubject(d){const temas=Object.keys(d.TN).map(Number);const sk=d.sk
   sk.forEach(s=>{const g0=s.g;s.g=()=>{const r=g0();if(r.fig)r.q+=`<div class="fig">${r.fig}</div>`;if(r.figSol)r.steps=r.steps.concat([`<div class="fig">${r.figSol}</div>`]);return r}});
   temas.forEach(t=>sk.push({id:d.id+t+'vf',t,n:'Teoría: verdadero o falso',ref:'Teoría T'+t,g(){const x=pick(d.VF[t]);return{q:x[0],a:CH(['Verdadero','Falso'],x[1]?0:1),hint:'Recuerda la definición o busca un contraejemplo sencillo.',steps:[x[2]]}}}));
   const cards=temas.flatMap(t=>d.CARDS[t].map((c,i)=>({id:`${d.id}_c${t}_${i}`,t,f:c[0],b:c[1]})));
-  return{id:d.id,name:d.name,sub:d.sub,tools:false,SK:sk,TN:d.TN,TEMAS:temas,ALLCARDS:cards,TH:d.TH,GUIDE:{},ERR:[],EJ:d.EJ,HOJA:d.HOJA}}
+  return{id:d.id,name:d.name,sub:d.sub,tools:false,SK:sk,TN:d.TN,TEMAS:temas,ALLCARDS:cards,TH:d.TH,GUIDE:{},ERR:[],EJ:d.EJ,HOJA:d.HOJA,LAM:d.LAM}}
 const HELPERS={R,fr,ft,ri,nz,pick,shuffle,NUM,CH,APX};
 (window.ASIGNATURAS||[]).forEach(f=>{try{const d=buildSubject(f(HELPERS));SUBJECTS[d.id]=d}catch(e){console.warn('Asignatura no cargada',e)}});
 let SUB=SUBJECTS.algebra;
@@ -395,19 +395,19 @@ const setExam=v=>{if(SUB.id==='algebra')S.examDate=v;else(S.examD=S.examD||{})[S
 const V=document.getElementById('view');
 function math(el){const go=()=>window.MathJax&&MathJax.typesetPromise?MathJax.typesetPromise([el]).catch(()=>{}):null;if(window.MathJax&&MathJax.typesetPromise)go();else{let n=0;const t=setInterval(()=>{if((window.MathJax&&MathJax.typesetPromise)||n++>60){clearInterval(t);go()}},150)}}
 function show(html){V.innerHTML=html;V.classList.remove('fade');void V.offsetWidth;V.classList.add('fade');math(V);window.scrollTo(0,0)}
-const VIEWS_ALL=[['hoy','Hoy'],['temario','Temario'],['ejemplos','Ejemplos'],['practicar','Practicar'],['tarjetas','Tarjetas'],['simulacro','Simulacro'],['calculadora','Calculadora'],['hojas','Hojas']];
+const VIEWS_ALL=[['hoy','Hoy'],['temario','Temario'],['ejemplos','Ejemplos'],['laminas','Láminas'],['practicar','Practicar'],['tarjetas','Tarjetas'],['simulacro','Simulacro'],['calculadora','Calculadora'],['hojas','Hojas']];
 let VIEWS=VIEWS_ALL;
 const nav=document.getElementById('nav');
 nav.onclick=e=>{const b=e.target.closest('button');if(b)go(b.dataset.v)};
 const subjbar=document.getElementById('subjbar');
-function buildChrome(){VIEWS=VIEWS_ALL.filter(v=>(SUB.tools||(v[0]!=='calculadora'&&v[0]!=='hojas'))&&(SUB.EJ||v[0]!=='ejemplos'));
+function buildChrome(){VIEWS=VIEWS_ALL.filter(v=>(SUB.tools||(v[0]!=='calculadora'&&v[0]!=='hojas'))&&(SUB.EJ||v[0]!=='ejemplos')&&(SUB.LAM||v[0]!=='laminas'));
   nav.innerHTML=VIEWS.map(v=>`<button data-v="${v[0]}">${v[1]}</button>`).join('');
   document.getElementById('brandsub').textContent=SUB.sub;
   const ids=Object.keys(SUBJECTS);document.getElementById('subjwrap').hidden=ids.length<2;
   subjbar.innerHTML=ids.map(id=>`<button class="chip" data-sub="${id}" aria-pressed="${id===SUB.id}">${SUBJECTS[id].name}</button>`).join('')}
 subjbar.onclick=e=>{const b=e.target.closest('[data-sub]');if(!b||b.dataset.sub===SUB.id)return;clearInterval(examTimer);S.subject=b.dataset.sub;save();applySubject(S.subject);buildChrome();go(VIEWS.some(v=>v[0]===cur)?cur:'hoy')};
 let cur='hoy';
-function go(v,arg){cur=v;[...nav.children].forEach(b=>b.dataset.v===v?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current'));try{history.replaceState(null,'','#'+v)}catch(e){}({hoy:vHoy,temario:vTemario,ejemplos:vEjemplos,practicar:vPracticar,tarjetas:vTarjetas,simulacro:vSimulacro,calculadora:vCalc,hojas:vHojas})[v](arg)}
+function go(v,arg){cur=v;[...nav.children].forEach(b=>b.dataset.v===v?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current'));try{history.replaceState(null,'','#'+v)}catch(e){}({hoy:vHoy,temario:vTemario,ejemplos:vEjemplos,laminas:vLaminas,practicar:vPracticar,tarjetas:vTarjetas,simulacro:vSimulacro,calculadora:vCalc,hojas:vHojas})[v](arg)}
 function route(){go(cur)}
 /* ---------- ejercicio ---------- */
 function answerHTML(a,pfx=''){if(a.type==='approx')return`<div class="row"><label class="small" for="${pfx}n">Resultado</label><input class="field" id="${pfx}n" inputmode="text" autocomplete="off" placeholder="12,5"><span class="small">${a.unit}</span></div>`;
@@ -455,6 +455,19 @@ function vEjemplos(arg){const t=(arg&&arg.t)||TEMAS[0];const ej=(SUB.EJ&&SUB.EJ[
   <section class="panel"><span class="kicker">Ejemplos resueltos</span>${ej.map((e,i)=>`<details ${i===0?'open':''}><summary>${e.t}</summary><div class="body"><div class="box">${e.q}</div>${e.read?`<div class="trap"><b>Cómo leer el enunciado.</b> ${e.read}</div>`:''}${steps(e.steps)}${e.res?`<div class="fb ok">${e.res}</div>`:''}</div></details>`).join('')||'<p class="small">Todavía no hay ejemplos en este tema.</p>'}</section>
   ${hj.length?`<section class="panel"><span class="kicker">Para hacer en hoja</span><p class="small">Hazlo primero sin mirar. Después abre la solución y compara tu dibujo y tus números.</p>${hj.map((e,i)=>`<details><summary>Ejercicio ${i+1}. ${e.t}</summary><div class="body"><div class="box">${e.q}</div><details><summary style="font-size:17px">Ver solución paso a paso</summary><div class="body">${steps(e.steps)}<div class="fb ok">${e.res}</div></div></details></div></details>`).join('')}</section>`:''}`);
   V.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>vEjemplos({t:+b.dataset.t}))}
+/* ---------- Láminas resueltas ---------- */
+const LAMP={};
+function vLaminas(arg){const L=SUB.LAM,id=(arg&&arg.id)||L[0].id,lam=L.find(x=>x.id===id),Pm=LAMP[id]||(LAMP[id]=Object.assign({},lam.def));const out=lam.solve(Pm);
+  const inp=q=>q.opts?`<select data-k="${q.k}">${q.opts.map(o=>`<option value="${o[0]}" ${+Pm[q.k]===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select>`:`<input class="field" style="width:84px" type="number" step="any" data-k="${q.k}" value="${Pm[q.k]}">`;
+  show(`<h1>Láminas resueltas</h1><p class="lead">Practica los ejercicios tipo lámina. Cambia los datos o pide una variante, hazla primero en tu hoja y abre cada paso para comparar. Todo se calcula con los datos que pongas.</p>
+  <div class="row">${L.map(x=>`<button class="chip" aria-pressed="${x.id===id}" data-l="${x.id}">${x.nombre}</button>`).join('')}</div>
+  <section class="panel"><span class="kicker">Datos</span><div class="row" style="gap:14px">${lam.params.map(q=>`<label class="small">${q.label}<br>${inp(q)}</label>`).join('')}</div><div class="row"><button class="btn pri" id="lres">Resolver</button><button class="btn" id="lrnd">Variante aleatoria</button><button class="btn" id="ldef">Datos de la lámina</button></div></section>
+  ${out.err?`<div class="fb bad">${out.err}</div>`:`<section class="panel"><span class="kicker">Enunciado</span>${out.enun}</section>
+  <section class="panel"><span class="kicker">Resolución paso a paso</span><p class="small">Dibuja cada paso a mano y abre después el recuadro para comparar con la figura y los números.</p>${out.steps.map((s,i)=>`<details><summary>Paso ${i+1}. ${s.t}</summary><div class="body">${s.html}${s.fig?`<div class="fig">${s.fig}</div>`:''}</div></details>`).join('')}${out.res?`<div class="fb ok">${out.res}</div>`:''}</section>`}`);
+  V.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>vLaminas({id:b.dataset.l}));
+  V.querySelector('#lres').onclick=()=>{V.querySelectorAll('[data-k]').forEach(e=>{Pm[e.dataset.k]=parseFloat(e.value)||0});vLaminas({id})};
+  V.querySelector('#lrnd').onclick=()=>{LAMP[id]=lam.rand();vLaminas({id})};
+  V.querySelector('#ldef').onclick=()=>{LAMP[id]=Object.assign({},lam.def);vLaminas({id})}}
 /* ---------- Practicar ---------- */
 function vPracticar(arg){let t=(arg&&arg.t)||1,sel=arg&&arg.sk||null;
   const paint=()=>{show(`<h1>Practicar</h1><p class="lead">Cada ejercicio es nuevo. Elige una habilidad o deja que la app priorice tus puntos flojos.</p><div class="row">${TEMAS.map(x=>`<button class="chip" aria-pressed="${x===t}" data-t="${x}">Tema ${x}</button>`).join('')}</div><div class="row"><button class="chip" aria-pressed="${!sel}" data-s="">Prioridad automática</button>${SK.filter(s=>s.t===t).map(s=>`<button class="chip" aria-pressed="${sel===s.id}" data-s="${s.id}">${s.n} · ${Math.round(skScore(s.id)*100)}%</button>`).join('')}</div><section class="panel" id="ex"></section>`);

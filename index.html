@@ -380,6 +380,8 @@ function streak(){let n=0;const d=new Date();if(!S.days[today()])d.setDate(d.get
 /* Cada asignatura extra vive en su archivo asig-*.js y se registra en window.ASIGNATURAS. */
 const SUBJECTS={algebra:{id:'algebra',name:'Álgebra',sub:'Álgebra · Ingeniería Civil',tools:true,SK,TN,TEMAS,ALLCARDS,TH,GUIDE,ERR}};
 function buildSubject(d){const temas=Object.keys(d.TN).map(Number);const sk=d.skills.slice();
+  /* un ejercicio puede traer fig (dibujo del enunciado) y figSol (dibujo de la solución), en SVG */
+  sk.forEach(s=>{const g0=s.g;s.g=()=>{const r=g0();if(r.fig)r.q+=`<div class="fig">${r.fig}</div>`;if(r.figSol)r.steps=r.steps.concat([`<div class="fig">${r.figSol}</div>`]);return r}});
   temas.forEach(t=>sk.push({id:d.id+t+'vf',t,n:'Teoría: verdadero o falso',ref:'Teoría T'+t,g(){const x=pick(d.VF[t]);return{q:x[0],a:CH(['Verdadero','Falso'],x[1]?0:1),hint:'Recuerda la definición o busca un contraejemplo sencillo.',steps:[x[2]]}}}));
   const cards=temas.flatMap(t=>d.CARDS[t].map((c,i)=>({id:`${d.id}_c${t}_${i}`,t,f:c[0],b:c[1]})));
   return{id:d.id,name:d.name,sub:d.sub,tools:false,SK:sk,TN:d.TN,TEMAS:temas,ALLCARDS:cards,TH:d.TH,GUIDE:{},ERR:[],EJ:d.EJ,HOJA:d.HOJA}}
